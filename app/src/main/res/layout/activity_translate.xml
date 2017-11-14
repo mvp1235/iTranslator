@@ -5,24 +5,33 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.mvp.itranslate.TranslateActivity">
-
+    android:layout_margin="20dp"
+    tools:context="com.example.mvp.itranslator.TranslateActivity">
 
     <EditText
         android:id="@+id/textInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="textPersonName" />
+        android:hint="@string/textInputHint"
+        android:inputType="textMultiLine" />
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/languages"
+        android:prompt="@string/targetLanguagePrompt"
+        android:id="@+id/targetLanguageSpinner"/>
+
+    <Button
+        android:id="@+id/translateBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/translate" />
 
     <TextView
         android:id="@+id/resultTV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
-    <Button
-        android:id="@+id/translateBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Button" />
 </LinearLayout>

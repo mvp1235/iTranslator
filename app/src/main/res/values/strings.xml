@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">iTranslator</string>
+    <string name="translate">Translate</string>
+    <string name="textInputHint">enter text to be translated</string>
+    <string name="targetLanguagePrompt">Pick a target language</string>
 </resources>
