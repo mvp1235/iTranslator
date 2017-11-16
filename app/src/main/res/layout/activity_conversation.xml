@@ -5,7 +5,74 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:layout_margin="20dp"
     tools:context="com.example.mvp.itranslator.ConversationActivity">
+
+    <TextView
+        android:id="@+id/textSpeechInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Person 1" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:orientation="horizontal">
+
+        <Spinner
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:entries="@array/languages"
+            android:prompt="@string/targetLanguagePrompt"
+            android:id="@+id/targetLanguageSpinner"/>
+
+        <Button
+            android:id="@+id/speakBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Speak" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textSpeechInput2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Person 2" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Spinner
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:entries="@array/languages"
+            android:prompt="@string/targetLanguagePrompt"
+            android:id="@+id/targetLanguageSpinner2"/>
+
+        <Button
+            android:id="@+id/speakBtn2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Speak" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/translatedText"
+        android:layout_marginTop="30dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Translated" />
+
+
 
 
 

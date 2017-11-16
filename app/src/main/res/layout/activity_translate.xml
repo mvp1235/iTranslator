@@ -23,12 +23,24 @@
         android:prompt="@string/targetLanguagePrompt"
         android:id="@+id/targetLanguageSpinner"/>
 
-    <Button
-        android:id="@+id/translateBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/translate" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/clearBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/clear" />
+
+        <Button
+            android:id="@+id/translateBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/translate" />
+
+    </LinearLayout>
+
 
     <TextView
         android:id="@+id/resultTV"
