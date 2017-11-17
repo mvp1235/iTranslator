@@ -8,20 +8,61 @@
     android:layout_margin="20dp"
     tools:context="com.example.mvp.itranslator.TranslateActivity">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:orientation="horizontal">
+
+        <Spinner
+            android:id="@+id/translateSpeechLangSpinner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"/>
+
+        <Button
+            android:id="@+id/translateSpeakBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/speak" />
+
+    </LinearLayout>
+
+
     <EditText
         android:id="@+id/textInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="@string/textInputHint"
+        android:layout_marginBottom="20dp"
         android:inputType="textMultiLine" />
 
-    <Spinner
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:entries="@array/languages"
-        android:prompt="@string/targetLanguagePrompt"
-        android:id="@+id/targetLanguageSpinner"/>
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:gravity="center_vertical"
+            android:background="@color/colorLightBlue"
+            android:text="@string/targetLanguage"
+
+            android:textStyle="bold" />
+
+        <Spinner
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:prompt="@string/targetLanguagePrompt"
+            android:id="@+id/targetLanguageSpinner"/>
+    </LinearLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -45,5 +86,14 @@
     <TextView
         android:id="@+id/resultTV"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"/>
+
+    <Button
+        android:id="@+id/translatedSpeakBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:text="@string/speak" />
+
 </LinearLayout>

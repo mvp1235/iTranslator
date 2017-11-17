@@ -6,10 +6,13 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -31,9 +34,9 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class ConversationActivity extends AppCompatActivity {
+public class ConversationActivity extends AppCompatActivity implements TextToSpeech.OnInitListener{
 
-    private final String CLOUD_API_KEY = "AIzaSyBtnT5Ln0j-t6q2ju98N7wM_LdbLd9yBxo";
+    private ArrayList<String> languages;
 
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
 
@@ -43,6 +46,8 @@ public class ConversationActivity extends AppCompatActivity {
 
     private final int REQ_CODE_SPEECH_INPUT1 = 100;
     private final int REQ_CODE_SPEECH_INPUT2 = 101;
+
+    private TextToSpeech tts;
 
     //For first person
     private TextView textInput1;
@@ -64,9 +69,17 @@ public class ConversationActivity extends AppCompatActivity {
 
         ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
 
-        textInput1 = findViewById(R.id.textSpeechInput);
+        setUpLanguagesArray();
+
+        tts = new TextToSpeech(this, this);
+
+        textInput1 = findViewById(R.id.textSpeechInput1);
         speakBtn1 = findViewById(R.id.speakBtn);
-        targetLanguage1 = findViewById(R.id.targetLanguageSpinner);
+        targetLanguage1 = findViewById(R.id.targetLanguageSpinner1);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, languages);
+        targetLanguage1.setAdapter(adapter);
+        targetLanguage1.setSelection(languages.indexOf("English"));   //set default preson 1's language to English
 
         speakBtn1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,7 +92,10 @@ public class ConversationActivity extends AppCompatActivity {
 
         textInput2 = findViewById(R.id.textSpeechInput2);
         speakBtn2 = findViewById(R.id.speakBtn2);
+
         targetLanguage2 = findViewById(R.id.targetLanguageSpinner2);
+        targetLanguage2.setAdapter(adapter);
+        targetLanguage2.setSelection(languages.indexOf("Vietnamese"));   //set default preson 2's language to Vietnamese
 
         speakBtn2.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,57 +108,6 @@ public class ConversationActivity extends AppCompatActivity {
 
         translatedText = findViewById(R.id.translatedText);
 
-    }
-
-    private void translate() {
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "https://translation.googleapis.com/language/translate/v2";
-        String sourceString = textInput.getText().toString();
-        String apiKey = "AIzaSyBtnT5Ln0j-t6q2ju98N7wM_LdbLd9yBxo";
-
-        String targetLanguage = languageSpinner.getSelectedItem().toString();
-        targetLanguage = HomeActivity.languageInitials.get(targetLanguage);
-
-        try {
-            sourceString = URLEncoder.encode(sourceString,"UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-        url += "?q=" + sourceString + "&key=" + apiKey + "&target=" + targetLanguage;
-
-        // Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            JSONObject reader = new JSONObject(response);
-                            if (reader.getJSONObject("data") != null) {
-                                JSONObject data  = reader.getJSONObject("data");
-                                JSONArray translations = data.getJSONArray("translations");
-                                String translatedText = translations.getJSONObject(0).getString("translatedText");
-                                resultTV.setText(translatedText);
-                            } else {
-                                //Display the reason why the translation is failing
-                                JSONObject error  = reader.getJSONObject("error");
-                                String errorMessage = error.getString("message");
-                                resultTV.setText(errorMessage);
-                            }
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                resultTV.setText("That didn't work!");
-            }
-        });
-        // Add the request to the RequestQueue.
-        queue.add(stringRequest);
     }
 
     /**
@@ -183,6 +148,16 @@ public class ConversationActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onDestroy() {
+        // Don't forget to shutdown tts!
+        if (tts != null) {
+            tts.stop();
+            tts.shutdown();
+        }
+        super.onDestroy();
+    }
+
     /**
      * Receiving speech input
      * */
@@ -197,6 +172,7 @@ public class ConversationActivity extends AppCompatActivity {
                     ArrayList<String> result = data
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     textInput1.setText(result.get(0));
+                    translate(result.get(0), 1);
                 }
                 break;
             }
@@ -207,6 +183,7 @@ public class ConversationActivity extends AppCompatActivity {
                     ArrayList<String> result = data
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     textInput2.setText(result.get(0));
+                    translate(result.get(0), 2);
                 }
                 break;
             }
@@ -214,7 +191,124 @@ public class ConversationActivity extends AppCompatActivity {
         }
     }
 
+//    private void detectLanguage(String sourceString) {
+//        RequestQueue queue = Volley.newRequestQueue(this);
+//        String url = "https://translation.googleapis.com/language/translate/v2/detect";
+//        url += "?q=" + sourceString + "&key=" + CLOUD_API_KEY;
+//
+//        // Request a string response from the provided URL.
+//        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+//                new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String response) {
+//                        try {
+//                            JSONObject reader = new JSONObject(response);
+//                            if (reader.getJSONObject("data") != null) {
+//                                JSONObject data  = reader.getJSONObject("data");
+//                                JSONArray detections = data.getJSONArray("detections");
+//                                String result = detections.getJSONObject(0).getString("language");
+//                                detectedLanguage.setText(result);
+//
+//                            } else {
+//                                //Display the reason why the translation is failing
+//                                JSONObject error  = reader.getJSONObject("error");
+//                                String errorMessage = error.getString("message");
+//                                detectedLanguage.setText(errorMessage);
+//                            }
+//
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+//
+//                    }
+//                }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                detectedLanguage.setText("That didn't work!");
+//            }
+//        });
+//        // Add the request to the RequestQueue.
+//        queue.add(stringRequest);
+//    }
 
+    private void translate(String sourceString, final int personNum) {
+        //Update UI
+        if (personNum == 1)
+            translatedText.setBackgroundColor(getResources().getColor(R.color.colorLightBlue));
+        else
+            translatedText.setBackgroundColor(getResources().getColor(R.color.colorLightGreen));
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "https://translation.googleapis.com/language/translate/v2";
+
+        String targetLanguage;
+        if (personNum == 1)
+            targetLanguage = targetLanguage2.getSelectedItem().toString();
+        else
+            targetLanguage = targetLanguage1.getSelectedItem().toString();
+
+        targetLanguage = HomeActivity.languageInitials.get(targetLanguage);
+
+        try {
+            sourceString = URLEncoder.encode(sourceString,"UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        url += "?q=" + sourceString + "&key=" + HomeActivity.CLOUD_API_KEY + "&target=" + targetLanguage;
+
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject reader = new JSONObject(response);
+                            if (reader.getJSONObject("data") != null) {
+                                JSONObject data  = reader.getJSONObject("data");
+                                JSONArray translations = data.getJSONArray("translations");
+                                String result = translations.getJSONObject(0).getString("translatedText");
+                                translatedText.setText(result);
+//                                detectLanguage(result);
+
+                                String text = translatedText.getText().toString();
+                                String language = "";
+                                if (personNum == 1)
+                                    language = targetLanguage2.getSelectedItem().toString();
+                                else
+                                    language = targetLanguage1.getSelectedItem().toString();
+
+                                language = HomeActivity.languageInitials.get(language);
+
+                                int languageAvailable = tts.setLanguage(new Locale(language));
+                                if (languageAvailable == TextToSpeech.LANG_MISSING_DATA
+                                        || languageAvailable == TextToSpeech.LANG_NOT_SUPPORTED) {
+                                    Log.e("TTS", "This Language is not supported");
+                                } else {
+                                    tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+                                }
+
+                            } else {
+                                //Display the reason why the translation is failing
+                                JSONObject error  = reader.getJSONObject("error");
+                                String errorMessage = error.getString("message");
+                                translatedText.setText(errorMessage);
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                translatedText.setText("That didn't work!");
+            }
+        });
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -226,6 +320,69 @@ public class ConversationActivity extends AppCompatActivity {
         }
         if (!permissionToRecordAccepted ) finish();
 
+    }
+
+    /**
+     * Called to signal the completion of the TextToSpeech engine initialization.
+     *
+     * @param status {@link TextToSpeech#SUCCESS} or {@link TextToSpeech#ERROR}.
+     */
+    @Override
+    public void onInit(int status) {
+
+        if (status == TextToSpeech.SUCCESS) {
+
+            int result = tts.setLanguage(Locale.US);    //default langauge is English
+
+            if (result == TextToSpeech.LANG_MISSING_DATA
+                    || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("TTS", "This Language is not supported");
+            } else {
+                // do stuff
+
+            }
+
+        } else {
+            Log.e("TTS", "Initilization Failed!");
+        }
+
+    }
+
+    /**
+     * Google text-to-speech functionality only supports these (30) languages, unlike the broad support for google cloud translation
+     */
+    private void setUpLanguagesArray() {
+        languages = new ArrayList<>();
+        languages.add("Bengali");
+        languages.add("Chinese (Simplified)");
+        languages.add("Chinese (Traditional)");
+        languages.add("Czech");
+        languages.add("Danish");
+        languages.add("Dutch");
+        languages.add("English");
+        languages.add("Finnish");
+        languages.add("French");
+        languages.add("German");
+        languages.add("Greek");
+        languages.add("Hindi");
+        languages.add("Hungarian");
+        languages.add("Indonesian");
+        languages.add("Italian");
+        languages.add("Japanese");
+        languages.add("Khmer");
+        languages.add("Korean");
+        languages.add("Nepali");
+        languages.add("Norwegian");
+        languages.add("Polish");
+        languages.add("Portuguese (Portugal, Brazil)");
+        languages.add("Russian");
+        languages.add("Sinhala (Sinhalese)");
+        languages.add("Spanish");
+        languages.add("Swedish");
+        languages.add("Thai");
+        languages.add("Turkish");
+        languages.add("Ukrainian");
+        languages.add("Vietnamese");
     }
 
 }

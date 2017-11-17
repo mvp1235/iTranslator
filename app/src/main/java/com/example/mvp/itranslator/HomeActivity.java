@@ -10,6 +10,10 @@ import java.util.HashMap;
 
 public class HomeActivity extends AppCompatActivity {
 
+    //This key will not be available on app launched. User will need to provide his/her own API key to use the app
+    //The app will show users instructions on how to obtain this API key
+    public static final String CLOUD_API_KEY = "AIzaSyBtnT5Ln0j-t6q2ju98N7wM_LdbLd9yBxo";
+
     public static HashMap<String, String> languageInitials;
 
     private ImageButton translateBtn, conversationBtn, placesBtn, profileBtn;

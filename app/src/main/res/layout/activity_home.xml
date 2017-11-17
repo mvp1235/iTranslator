@@ -12,9 +12,9 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="2"
-        android:scaleType="fitCenter"
         android:background="@android:color/white"
-        app:srcCompat="@mipmap/ic_launcher_round" />
+        android:scaleType="fitCenter"
+        app:srcCompat="@mipmap/i_translator_logo" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,7 +29,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@android:color/white"
-            app:srcCompat="@mipmap/ic_launcher" />
+            app:srcCompat="@android:drawable/ic_menu_sort_alphabetically" />
 
 
         <ImageButton
@@ -38,7 +38,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@android:color/white"
-            app:srcCompat="@mipmap/ic_launcher" />
+            app:srcCompat="@android:drawable/ic_btn_speak_now" />
 
     </LinearLayout>
 
@@ -54,7 +54,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@android:color/white"
-            app:srcCompat="@mipmap/ic_launcher" />
+            app:srcCompat="@android:drawable/ic_menu_camera" />
 
         <ImageButton
             android:id="@+id/profileBtn"
@@ -62,7 +62,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@android:color/white"
-            app:srcCompat="@mipmap/ic_launcher" />
+            app:srcCompat="?android:attr/actionModePasteDrawable" />
 
     </LinearLayout>
 

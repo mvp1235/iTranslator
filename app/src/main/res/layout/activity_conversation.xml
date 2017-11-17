@@ -9,10 +9,12 @@
     tools:context="com.example.mvp.itranslator.ConversationActivity">
 
     <TextView
-        android:id="@+id/textSpeechInput"
+        android:id="@+id/textSpeechInput1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Person 1" />
+        android:background="#6400ddff"
+        android:text="Person 1"
+        android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,9 +26,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:entries="@array/languages"
             android:prompt="@string/targetLanguagePrompt"
-            android:id="@+id/targetLanguageSpinner"/>
+            android:id="@+id/targetLanguageSpinner1"/>
 
         <Button
             android:id="@+id/speakBtn"
@@ -41,7 +42,9 @@
         android:id="@+id/textSpeechInput2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Person 2" />
+        android:background="#64abe204"
+        android:text="Person 2"
+        android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -52,7 +55,6 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:entries="@array/languages"
             android:prompt="@string/targetLanguagePrompt"
             android:id="@+id/targetLanguageSpinner2"/>
 
@@ -67,13 +69,10 @@
 
     <TextView
         android:id="@+id/translatedText"
-        android:layout_marginTop="30dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Translated" />
-
-
-
-
+        android:layout_marginTop="30dp"
+        android:text="Translated"
+        android:textStyle="bold" />
 
 </LinearLayout>
