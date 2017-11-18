@@ -16,7 +16,7 @@ public class HomeActivity extends AppCompatActivity {
 
     public static HashMap<String, String> languageInitials;
 
-    private ImageButton translateBtn, conversationBtn, placesBtn, profileBtn;
+    private ImageButton translateBtn, conversationBtn, photoBtn, profileBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +28,7 @@ public class HomeActivity extends AppCompatActivity {
         //Referencing to the UI elements for usage
         translateBtn = findViewById(R.id.translateBtn);
         conversationBtn = findViewById(R.id.conversationBtn);
-        placesBtn = findViewById(R.id.placesBtn);
+        photoBtn = findViewById(R.id.photosBtn);
         profileBtn = findViewById(R.id.profileBtn);
 
         setUpClickListeners();
@@ -48,14 +48,14 @@ public class HomeActivity extends AppCompatActivity {
         conversationBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                enterConversatinMode();
+                enterConversationMode();
             }
         });
 
-        placesBtn.setOnClickListener(new View.OnClickListener() {
+        photoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                enterPlacesMode();
+                enterPhotoTranslationMode();
             }
         });
 
@@ -78,7 +78,7 @@ public class HomeActivity extends AppCompatActivity {
     /**
      * Take users to conversation mode, where the app will await for the users' voice input, automatically translate it to requested language, and speak it out
      */
-    private void enterConversatinMode() {
+    private void enterConversationMode() {
         Intent intent = new Intent(this, ConversationActivity.class);
         startActivity(intent);
     }
@@ -86,8 +86,9 @@ public class HomeActivity extends AppCompatActivity {
     /**
      * Takes users to places mdoe, where they can look for places to visit nearby
      */
-    private void enterPlacesMode() {
-
+    private void enterPhotoTranslationMode() {
+        Intent intent = new Intent(this, PhotoTranslateActivity.class);
+        startActivity(intent);
     }
 
     /**

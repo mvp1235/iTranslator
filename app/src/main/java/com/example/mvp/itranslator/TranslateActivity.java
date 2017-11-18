@@ -134,7 +134,6 @@ public class TranslateActivity extends AppCompatActivity implements TextToSpeech
                 }
                 break;
             }
-
         }
     }
 

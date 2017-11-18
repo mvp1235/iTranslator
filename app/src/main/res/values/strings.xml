@@ -9,4 +9,9 @@
     <string name="tap_on_mic">Tap on mic to speak</string>
     <string name="targetLanguage">Target Language</string>
     <string name="speak">Speak</string>
+    <string name="chooseFromGallery">Choose From Gallery</string>
+    <string name="takeAPhoto">Take A Photo</string>
+    <string name="detectedLanguage">Detected Language</string>
+    <string name="sourceLanguage">Source Language</string>
+    <string name="translationResult">Translation Result</string>
 </resources>
