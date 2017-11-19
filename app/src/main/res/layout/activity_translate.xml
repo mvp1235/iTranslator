@@ -20,12 +20,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="3"/>
 
-        <Button
+        <ImageButton
             android:id="@+id/translateSpeakBtn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/speak" />
+            android:background="@android:color/transparent"
+            app:srcCompat="@android:drawable/ic_btn_speak_now" />
 
     </LinearLayout>
 
@@ -34,9 +35,9 @@
         android:id="@+id/textInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/textInputHint"
         android:layout_marginBottom="20dp"
+        android:ems="10"
+        android:hint="@string/translationScreenHint"
         android:inputType="textMultiLine" />
 
     <LinearLayout
@@ -47,17 +48,16 @@
 
         <TextView
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="2"
             android:gravity="center_vertical"
             android:background="@color/colorLightBlue"
             android:text="@string/targetLanguage"
-
             android:textStyle="bold" />
 
         <Spinner
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="3"
             android:prompt="@string/targetLanguagePrompt"
             android:id="@+id/targetLanguageSpinner"/>
@@ -66,7 +66,8 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:gravity="end">
 
         <Button
             android:id="@+id/clearBtn"
@@ -83,17 +84,37 @@
     </LinearLayout>
 
 
-    <TextView
-        android:id="@+id/resultTV"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"/>
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp">
 
-    <Button
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:background="@color/colorLightBlue"
+            android:text="@string/translationResult"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/resultTV"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:layout_weight="3"/>
+
+    </LinearLayout>
+
+
+    <ImageButton
         android:id="@+id/translatedSpeakBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:text="@string/speak" />
+        android:background="@android:color/transparent"
+        app:srcCompat="@android:drawable/ic_btn_speak_now" />
 
 </LinearLayout>

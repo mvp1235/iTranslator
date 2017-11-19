@@ -53,7 +53,7 @@ public class PhotoTranslateActivity extends AppCompatActivity implements TextToS
     private ImageView photoTV;
     private ImageButton getPhotoBtn;
     private Button translateBtn, speakBtn;
-    private TextView resultTV, detectedLangTV;
+    private TextView resultTV, detectedLangTV, sourceTextTV;
     private Spinner targetLanguageSpinner;
 
     private AlertDialog photoActionDialog;
@@ -77,6 +77,7 @@ public class PhotoTranslateActivity extends AppCompatActivity implements TextToS
         resultTV = findViewById(R.id.photoResultTV);
         targetLanguageSpinner = findViewById(R.id.photoTargetLangSpinnner);
         detectedLangTV = findViewById(R.id.photoLanguageDetectedTV);
+        sourceTextTV = findViewById(R.id.photoSourceText);
         speakBtn = findViewById(R.id.photoSpeakBtn);
 
         getPhotoBtn.setOnClickListener(new View.OnClickListener() {
@@ -190,8 +191,8 @@ public class PhotoTranslateActivity extends AppCompatActivity implements TextToS
                                 JSONObject result = textAnnotations.getJSONObject(0);
                                 String capturedText = result.getString("description");
                                 String language = result.getString("locale");
-//                                resultTV.setText(capturedText);
-                                detectedLangTV.setText(languageInitials.get(language));   // convert from language code to actual name later /////////////////////
+                                detectedLangTV.setText(languageInitials.get(language));
+                                sourceTextTV.setText(capturedText);
                                 translate(capturedText);
 
                             } else {

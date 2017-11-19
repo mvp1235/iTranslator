@@ -14,4 +14,6 @@
     <string name="detectedLanguage">Detected Language</string>
     <string name="sourceLanguage">Source Language</string>
     <string name="translationResult">Translation Result</string>
+    <string name="sourceText">Source Text</string>
+    <string name="translationScreenHint">type in text, or choose a language and press Speak button for voice input</string>
 </resources>

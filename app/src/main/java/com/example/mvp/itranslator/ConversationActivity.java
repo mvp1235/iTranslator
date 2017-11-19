@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,12 +52,12 @@ public class ConversationActivity extends AppCompatActivity implements TextToSpe
 
     //For first person
     private TextView textInput1;
-    private Button speakBtn1;
+    private ImageButton speakBtn1;
     private Spinner targetLanguage1;
 
     //For second person
     private TextView textInput2;
-    private Button speakBtn2;
+    private ImageButton speakBtn2;
     private Spinner targetLanguage2;
 
     private TextView translatedText;
@@ -191,46 +192,6 @@ public class ConversationActivity extends AppCompatActivity implements TextToSpe
         }
     }
 
-//    private void detectLanguage(String sourceString) {
-//        RequestQueue queue = Volley.newRequestQueue(this);
-//        String url = "https://translation.googleapis.com/language/translate/v2/detect";
-//        url += "?q=" + sourceString + "&key=" + CLOUD_API_KEY;
-//
-//        // Request a string response from the provided URL.
-//        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-//                new Response.Listener<String>() {
-//                    @Override
-//                    public void onResponse(String response) {
-//                        try {
-//                            JSONObject reader = new JSONObject(response);
-//                            if (reader.getJSONObject("data") != null) {
-//                                JSONObject data  = reader.getJSONObject("data");
-//                                JSONArray detections = data.getJSONArray("detections");
-//                                String result = detections.getJSONObject(0).getString("language");
-//                                detectedLanguage.setText(result);
-//
-//                            } else {
-//                                //Display the reason why the translation is failing
-//                                JSONObject error  = reader.getJSONObject("error");
-//                                String errorMessage = error.getString("message");
-//                                detectedLanguage.setText(errorMessage);
-//                            }
-//
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//
-//                    }
-//                }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                detectedLanguage.setText("That didn't work!");
-//            }
-//        });
-//        // Add the request to the RequestQueue.
-//        queue.add(stringRequest);
-//    }
-
     private void translate(String sourceString, final int personNum) {
         //Update UI
         if (personNum == 1)
@@ -269,7 +230,6 @@ public class ConversationActivity extends AppCompatActivity implements TextToSpe
                                 JSONArray translations = data.getJSONArray("translations");
                                 String result = translations.getJSONObject(0).getString("translatedText");
                                 translatedText.setText(result);
-//                                detectLanguage(result);
 
                                 String text = translatedText.getText().toString();
                                 String language = "";
