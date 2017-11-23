@@ -17,4 +17,5 @@
     <string name="sourceText">Source Text</string>
     <string name="translationScreenHint">type in text, or choose a language and press Speak button for voice input</string>
     <string name="conversationTitle">Conversation</string>
+    <string name="speechLang">Speech Language</string>
 </resources>

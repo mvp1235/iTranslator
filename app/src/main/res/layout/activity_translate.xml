@@ -18,55 +18,23 @@
             android:layout_marginBottom="20dp"
             android:orientation="horizontal">
 
-            <Spinner
-                android:id="@+id/translateSpeechLangSpinner"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="3"/>
-
-            <ImageButton
-                android:id="@+id/translateSpeakBtn"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@android:color/transparent"
-                app:srcCompat="@android:drawable/ic_btn_speak_now" />
-
-        </LinearLayout>
-
-
-        <EditText
-            android:id="@+id/textInput"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:ems="10"
-            android:hint="@string/translationScreenHint"
-            android:inputType="textMultiLine" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="10dp">
 
             <TextView
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:gravity="center_vertical"
+                android:text="@string/speechLang"
                 android:background="@color/colorLightBlue"
-                android:text="@string/targetLanguage"
+                android:gravity="center_vertical"
                 android:textStyle="bold" />
 
             <Spinner
+                android:id="@+id/translateSpeechLangSpinner"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="3"
-                android:prompt="@string/targetLanguagePrompt"
-                android:id="@+id/targetLanguageSpinner"/>
-        </LinearLayout>
+                android:layout_height="match_parent"
+                android:layout_weight="3"/>
 
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -87,6 +55,62 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/textInput"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:layout_marginBottom="20dp"
+                android:ems="10"
+                android:hint="@string/translationScreenHint"
+                android:inputType="textMultiLine" />
+
+            <ImageButton
+                android:id="@+id/translateSpeakBtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:background="@android:color/transparent"
+                app:srcCompat="@android:drawable/ic_btn_speak_now" />
+
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/translateSourceLanguageSpinner"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3"/>
+
+            <ImageButton
+                android:id="@+id/translateSwapBtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:layout_marginHorizontal="5dp"
+                app:srcCompat="@mipmap/swap_icon" />
+
+            <Spinner
+                android:id="@+id/translateTargetLanguageSpinner"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3"/>
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -95,31 +119,30 @@
             android:layout_marginTop="20dp">
 
             <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:background="@color/colorLightBlue"
-                android:text="@string/translationResult"
-                android:textStyle="bold" />
-
-            <TextView
                 android:id="@+id/resultTV"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
-                android:layout_weight="3"/>
+                android:background="@color/colorLightBlue"
+                android:layout_weight="4"/>
+
+            <ImageButton
+                android:id="@+id/translatedSpeakBtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                app:srcCompat="@drawable/speaker_icon" />
 
         </LinearLayout>
 
-
-        <ImageButton
-            android:id="@+id/translatedSpeakBtn"
+        <TextView
+            android:id="@+id/translateSpeakErrorTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:background="@android:color/transparent"
-            app:srcCompat="@android:drawable/ic_btn_speak_now" />
+            android:textColor="@android:color/holo_red_dark" />
+
 
 
     </LinearLayout>
