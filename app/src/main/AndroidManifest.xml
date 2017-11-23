@@ -8,7 +8,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
@@ -20,9 +20,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ConversationActivity" />
-        <activity android:name=".TranslateActivity" />
-        <activity android:name=".PhotoTranslateActivity"></activity>
+        <activity android:name=".ConversationActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
+        <activity android:name=".TranslateActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
+        <activity android:name=".PhotoTranslateActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
     </application>
 
 </manifest>

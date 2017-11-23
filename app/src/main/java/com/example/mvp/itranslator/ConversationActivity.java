@@ -80,7 +80,7 @@ public class ConversationActivity extends AppCompatActivity implements TextToSpe
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, languages);
         targetLanguage1.setAdapter(adapter);
-        targetLanguage1.setSelection(languages.indexOf("English"));   //set default preson 1's language to English
+        targetLanguage1.setSelection(languages.indexOf("English"));   //set default person 1's language to English
 
         speakBtn1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,7 +96,7 @@ public class ConversationActivity extends AppCompatActivity implements TextToSpe
 
         targetLanguage2 = findViewById(R.id.targetLanguageSpinner2);
         targetLanguage2.setAdapter(adapter);
-        targetLanguage2.setSelection(languages.indexOf("Vietnamese"));   //set default preson 2's language to Vietnamese
+        targetLanguage2.setSelection(languages.indexOf("Vietnamese"));   //set default person 2's language to Vietnamese
 
         speakBtn2.setOnClickListener(new View.OnClickListener() {
             @Override
