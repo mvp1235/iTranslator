@@ -41,13 +41,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 
+import static com.example.mvp.itranslator.HomeActivity.languageInitialsReversed;
+import static com.example.mvp.itranslator.HomeActivity.languages;
+
 public class PhotoTranslateActivity extends AppCompatActivity implements TextToSpeech.OnInitListener {
 
     private static final int REQUEST_IMAGE_CAPTURE = 9000;
     private static final int REQUEST_GALLERY_PHOTO = 9001;
     private static final int REQ_CODE_SPEECH_INPUT = 9002;
 
-    private ArrayList<String> languages;
     private TextToSpeech tts;
 
     private ImageView photoTV;
@@ -59,15 +61,11 @@ public class PhotoTranslateActivity extends AppCompatActivity implements TextToS
     private AlertDialog photoActionDialog;
     private Bitmap photoBitmap = null;
 
-    private HashMap<String, String> languageInitials;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo_translate);
-
-        setUpLanguagesArray();
-        setUpLanguageInitials();
 
         tts = new TextToSpeech(this, this);
 
@@ -192,7 +190,7 @@ public class PhotoTranslateActivity extends AppCompatActivity implements TextToS
                                 JSONObject result = textAnnotations.getJSONObject(0);
                                 String capturedText = result.getString("description");
                                 String language = result.getString("locale");
-                                detectedLangTV.setText(languageInitials.get(language));
+                                detectedLangTV.setText(languageInitialsReversed.get(language));
                                 sourceTextTV.setText(capturedText);
                                 translate(capturedText);
 
@@ -308,223 +306,6 @@ public class PhotoTranslateActivity extends AppCompatActivity implements TextToS
         String imageEncoded = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
 
         return imageEncoded;
-    }
-
-    private void setUpLanguageInitials() {
-        languageInitials = new HashMap<>();
-        languageInitials.put("af", "Afrikaans");
-        languageInitials.put("sq", "Albanian");
-        languageInitials.put("am", "Amharic");
-        languageInitials.put("ar", "Arabic");
-        languageInitials.put("hy", "Armenian");
-        languageInitials.put("az", "Azeerbaijani");
-        languageInitials.put("eu", "Basque");
-        languageInitials.put("be", "Belarusian");
-        languageInitials.put("bn", "Bengali");
-        languageInitials.put("bs", "Bosnian");
-        languageInitials.put("bg", "Bulgarian");
-        languageInitials.put("ca", "Catalan");
-        languageInitials.put("ceb", "Cebuano");
-        languageInitials.put("zh-CN", "Chinese (Simplified)");
-        languageInitials.put("zh-TW", "Chinese (Traditional)");
-        languageInitials.put("co", "Corsican");
-        languageInitials.put("hr", "Croatian");
-        languageInitials.put("cs", "Czech");
-        languageInitials.put("da", "Danish");
-        languageInitials.put("nl", "Dutch");
-        languageInitials.put("en", "English");
-        languageInitials.put("eo", "Esperanto");
-        languageInitials.put("et", "Estonian");
-        languageInitials.put("fi", "Finnish");
-        languageInitials.put("fr", "French");
-        languageInitials.put("fy", "Frisian");
-        languageInitials.put("gl", "Galician");
-        languageInitials.put("ka", "Georgian");
-        languageInitials.put("de", "German");
-        languageInitials.put("el", "Greek");
-        languageInitials.put("gu", "Gujarati");
-        languageInitials.put("ht", "Haitian Creole");
-        languageInitials.put("ha", "Hausa");
-        languageInitials.put("haw", "Hawaiian");
-        languageInitials.put("iw", "Hebrew");
-        languageInitials.put("hi", "Hindi");
-        languageInitials.put("hmm", "Hmong");
-        languageInitials.put("hu", "Hungarian");
-        languageInitials.put("is", "Icelandic");
-        languageInitials.put("ig", "Igbo");
-        languageInitials.put("id", "Indonesian");
-        languageInitials.put("ga", "Irish");
-        languageInitials.put("it", "Italian");
-        languageInitials.put("ja", "Japanese");
-        languageInitials.put("jw", "Javanese");
-        languageInitials.put("kn", "Kannada");
-        languageInitials.put("kk", "Kazakh");
-        languageInitials.put("km", "Khmer");
-        languageInitials.put("ko", "Korean");
-        languageInitials.put("ku", "Kurdish");
-        languageInitials.put("ky", "Kyrgyz");
-        languageInitials.put("lo", "Lao");
-        languageInitials.put("la", "Latin");
-        languageInitials.put("lv", "Latvian");
-        languageInitials.put("lt", "Lithuanian");
-        languageInitials.put("af", "Afrikaans");
-        languageInitials.put("lb", "Luxembourgish");
-        languageInitials.put("mk", "Macedonian");
-        languageInitials.put("mg", "Malagasy");
-        languageInitials.put("ms", "Malay");
-        languageInitials.put("ml", "Malayalam");
-        languageInitials.put("mt", "Maltese");
-        languageInitials.put("mi", "Maori");
-        languageInitials.put("mr", "Marathi");
-        languageInitials.put("mn", "Mongolian");
-        languageInitials.put("my", "Myanmar (Burmese)");
-        languageInitials.put("ne", "Nepali");
-        languageInitials.put("no", "Norwegian");
-        languageInitials.put("ny", "Nyanja (Chichewa)");
-        languageInitials.put("ps", "Pashto");
-        languageInitials.put("fa", "Persian");
-        languageInitials.put("pl", "Polish");
-        languageInitials.put("pt", "Portuguese (Portugal, Brazil)");
-        languageInitials.put("pa", "Punjabi");
-        languageInitials.put("ro", "Romanian");
-        languageInitials.put("ru", "Russian");
-        languageInitials.put("sm", "Samoan");
-        languageInitials.put("gd", "Scots Gaelic");
-        languageInitials.put("sr", "Serbian");
-        languageInitials.put("st", "Sesotho");
-        languageInitials.put("sn", "Shona");
-        languageInitials.put("sd", "Sindhi");
-        languageInitials.put("si", "Sinhala (Sinhalese)");
-        languageInitials.put("sk", "Slovak");
-        languageInitials.put("sl", "Slovenian");
-        languageInitials.put("so", "Somali");
-        languageInitials.put("es", "Spanish");
-        languageInitials.put("su", "Sundanese");
-        languageInitials.put("sw", "Swahili");
-        languageInitials.put("sv", "Swedish");
-        languageInitials.put("tl", "Tagalog (Filipino)");
-        languageInitials.put("tg", "Tajik");
-        languageInitials.put("ta", "Tamil");
-        languageInitials.put("te", "Telugu");
-        languageInitials.put("th", "Thai");
-        languageInitials.put("ur", "Turkish");
-        languageInitials.put("uk", "Ukrainian");
-        languageInitials.put("ur", "Urdu");
-        languageInitials.put("uz", "Uzbek");
-        languageInitials.put("vi", "Vietnamese");
-        languageInitials.put("cy", "Welsh");
-        languageInitials.put("xh", "Xhosa");
-        languageInitials.put("yi", "Yiddish");
-        languageInitials.put("yo", "Yoruba");
-        languageInitials.put("zu", "Zulu");
-    }
-
-    private void setUpLanguagesArray() {
-        languages = new ArrayList<>();
-        languages.add("Afrikaans");
-        languages.add("Albanian");
-        languages.add("Amharic");
-        languages.add("Arabic");
-        languages.add("Armenian");
-        languages.add("Azeerbaijani");
-        languages.add("Basque");
-        languages.add("Belarusian");
-        languages.add("Bengali");
-        languages.add("Bosnian");
-        languages.add("Bulgarian");
-        languages.add("Catalan");
-        languages.add("Cebuano");
-        languages.add("Chinese (Simplified)");
-        languages.add("Chinese (Traditional)");
-        languages.add("Corsican");
-        languages.add("Croatian");
-        languages.add("Czech");
-        languages.add("Danish");
-        languages.add("Dutch");
-        languages.add("English");
-        languages.add("Esperanto");
-        languages.add("Estonian");
-        languages.add("Finnish");
-        languages.add("French");
-        languages.add("Frisian");
-        languages.add("Galician");
-        languages.add("Georgian");
-        languages.add("German");
-        languages.add("Greek");
-        languages.add("Gujarati");
-        languages.add("Haitian Creole");
-        languages.add("Hausa");
-        languages.add("Hawaiian");
-        languages.add("Hebrew");
-        languages.add("Hindi");
-        languages.add("Hmong");
-        languages.add("Hungarian");
-        languages.add("Icelandic");
-        languages.add("Igbo");
-        languages.add("Indonesian");
-        languages.add("Irish");
-        languages.add("Italian");
-        languages.add("Japanese");
-        languages.add("Javanese");
-        languages.add("Kannada");
-        languages.add("Kazakh");
-        languages.add("Khmer");
-        languages.add("Korean");
-        languages.add("Kurdish");
-        languages.add("Kyrgyz");
-        languages.add("Lao");
-        languages.add("Latin");
-        languages.add("Latvian");
-        languages.add("Lithuanian");
-        languages.add("Luxembourgish");
-        languages.add("Macedonian");
-        languages.add("Malagasy");
-        languages.add("Malay");
-        languages.add("Malayalam");
-        languages.add("Maltese");
-        languages.add("Maori");
-        languages.add("Marathi");
-        languages.add("Mongolian");
-        languages.add("Myanmar (Burmese)");
-        languages.add("Nepali");
-        languages.add("Norwegian");
-        languages.add("Nyanja (Chichewa)");
-        languages.add("Pashto");
-        languages.add("Persian");
-        languages.add("Polish");
-        languages.add("Portuguese (Portugal, Brazil)");
-        languages.add("Punjabi");
-        languages.add("Romanian");
-        languages.add("Russian");
-        languages.add("Samoan");
-        languages.add("Scots Gaelic");
-        languages.add("Serbian");
-        languages.add("Sesotho");
-        languages.add("Shona");
-        languages.add("Sindhi");
-        languages.add("Sinhala (Sinhalese)");
-        languages.add("Slovak");
-        languages.add("Slovenian");
-        languages.add("Somali");
-        languages.add("Spanish");
-        languages.add("Sundanese");
-        languages.add("Swahili");
-        languages.add("Swedish");
-        languages.add("Tagalog (Filipino)");
-        languages.add("Tajik");
-        languages.add("Tamil");
-        languages.add("Telugu");
-        languages.add("Thai");
-        languages.add("Turkish");
-        languages.add("Ukrainian");
-        languages.add("Urdu");
-        languages.add("Uzbek");
-        languages.add("Vietnamese");
-        languages.add("Welsh");
-        languages.add("Xhosa");
-        languages.add("Yiddish");
-        languages.add("Yoruba");
-        languages.add("Zulu");
     }
 
     /**

@@ -4,6 +4,8 @@
     <string name="clear">Clear</string>
     <string name="textInputHint">enter text to be translated</string>
     <string name="targetLanguagePrompt">Pick a target language</string>
+    <string name="sourceLanguagePrompt">Pick a source language</string>
+    <string name="speechLanguagePrompt">Pick a speech language</string>
     <string name="speech_prompt">Say something&#8230;</string>
     <string name="speech_not_supported">Sorry! Your device doesn\'t support speech input</string>
     <string name="tap_on_mic">Tap on mic to speak</string>
@@ -23,4 +25,5 @@
     <string name="userID">User\'s ID</string>
     <string name="defaultSourceLanguage">Source Language</string>
     <string name="speechLanguage">Speech Language</string>
+    <string name="profilePage">Profile Page</string>
 </resources>

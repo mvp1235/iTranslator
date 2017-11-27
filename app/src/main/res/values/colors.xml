@@ -6,5 +6,6 @@
     <color name="colorLightBlue">#6400ddff</color>
     <color name="colorLightGreen">#64abe204</color>
     <color name="colorLightYellow">#64e2e204</color>
+    <color name="light_gray_background">#64f0efef</color>
 
 </resources>

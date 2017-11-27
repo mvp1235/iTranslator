@@ -7,14 +7,14 @@
     android:layout_margin="20dp"
     tools:context="com.example.mvp.itranslator.ProfileActivity">
 
-
     <TextView
-        android:id="@+id/userName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/userName"
+        android:text="@string/profilePage"
         android:textAlignment="center"
-        android:textSize="18sp"
+        android:textColor="@color/colorAccent"
+        android:textSize="24sp"
+        android:layout_marginBottom="10dp"
         android:textStyle="bold" />
 
     <Button
@@ -24,6 +24,16 @@
         android:layout_gravity="end"
         android:text="@string/editProfile" />
 
+
+    <TextView
+        android:id="@+id/userName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:text="@string/userName"
+        android:textAlignment="viewStart"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -44,7 +54,9 @@
             android:id="@+id/userID"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="5" />
+            android:layout_weight="5"
+            android:background="@color/light_gray_background"
+            android:paddingHorizontal="10dp" />
 
     </LinearLayout>
 
@@ -59,14 +71,16 @@
             android:layout_height="match_parent"
             android:layout_weight="3"
             android:text="@string/defaultSourceLanguage"
+            android:background="@color/colorLightBlue"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/defaultSourceLanguage"
+            android:id="@+id/userSourceLanguage"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:background="@color/colorLightBlue"
-            android:layout_weight="5" />
+            android:layout_weight="5"
+            android:background="@color/light_gray_background"
+            android:paddingHorizontal="10dp" />
 
     </LinearLayout>
 
@@ -85,9 +99,12 @@
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/userTargetLanguage"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="5"/>
+            android:background="@color/light_gray_background"
+            android:paddingHorizontal="10dp"
+            android:layout_weight="5" />
 
     </LinearLayout>
 
@@ -102,13 +119,16 @@
             android:layout_height="match_parent"
             android:layout_weight="3"
             android:text="@string/speechLanguage"
+            android:background="@color/colorLightBlue"
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/userSpeechLanguage"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:background="@color/colorLightBlue"
-            android:layout_weight="5"/>
+            android:layout_weight="5"
+            android:background="@color/light_gray_background"
+            android:paddingHorizontal="10dp" />
 
     </LinearLayout>
 

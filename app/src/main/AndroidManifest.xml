@@ -29,7 +29,14 @@
         <activity
             android:name=".PhotoTranslateActivity"
             android:configChanges="keyboardHidden|orientation|screenSize" />
-        <activity android:name=".ProfileActivity"></activity>
+        <activity android:name=".ProfileActivity" />
+        <activity android:name=".EditProfileActivity"></activity>
+
+        <provider
+            android:name=".MyContentProvider"
+            android:authorities="com.example.mvp.itranslator"
+            android:enabled="true"
+            android:exported="true" />
     </application>
 
 </manifest>
