@@ -53,7 +53,7 @@ public class PhotoTranslateActivity extends AppCompatActivity implements TextToS
     private ImageView photoTV;
     private ImageButton getPhotoBtn;
     private Button translateBtn, speakBtn;
-    private TextView resultTV, detectedLangTV, sourceTextTV;
+    private TextView resultTV, detectedLangTV, sourceTextTV, speakErrorTV;
     private Spinner targetLanguageSpinner;
 
     private AlertDialog photoActionDialog;
@@ -78,6 +78,7 @@ public class PhotoTranslateActivity extends AppCompatActivity implements TextToS
         targetLanguageSpinner = findViewById(R.id.photoTargetLangSpinnner);
         detectedLangTV = findViewById(R.id.photoLanguageDetectedTV);
         sourceTextTV = findViewById(R.id.photoSourceText);
+        speakErrorTV = findViewById(R.id.photoTranslateError);
         speakBtn = findViewById(R.id.photoSpeakBtn);
 
         getPhotoBtn.setOnClickListener(new View.OnClickListener() {
@@ -126,7 +127,7 @@ public class PhotoTranslateActivity extends AppCompatActivity implements TextToS
         if (languageAvailable == TextToSpeech.LANG_MISSING_DATA
                 || languageAvailable == TextToSpeech.LANG_NOT_SUPPORTED) {
             Log.e("TTS", "This Language is not supported");
-            Toast.makeText(getApplicationContext(), "This language is not supported.", Toast.LENGTH_SHORT);
+            speakErrorTV.setText(targetLanguageSpinner.getSelectedItem().toString() + " is not supported for speech.");
         } else {
             tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
         }

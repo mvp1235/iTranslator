@@ -188,14 +188,14 @@ public class TranslateActivity extends AppCompatActivity implements TextToSpeech
         String text = resultTV.getText().toString();
         if (text.isEmpty())
             return;
-        
+
         String language = targetLanguageSpinner.getSelectedItem().toString();
         language = HomeActivity.languageInitials.get(language);
         int languageAvailable = tts.setLanguage(new Locale(language));
         if (languageAvailable == TextToSpeech.LANG_MISSING_DATA
                 || languageAvailable == TextToSpeech.LANG_NOT_SUPPORTED) {
             Log.e("TTS", "This Language is not supported");
-            errorTV.setText("This language is not supported for speech.");
+            errorTV.setText(targetLanguageSpinner.getSelectedItem().toString() + " is not supported for speech.");
         } else {
             errorTV.setText("");
             tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
@@ -377,7 +377,6 @@ public class TranslateActivity extends AppCompatActivity implements TextToSpeech
                 Log.e("TTS", "This Language is not supported");
             } else {
                 // do stuff
-
             }
 
         } else {

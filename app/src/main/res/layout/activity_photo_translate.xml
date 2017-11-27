@@ -154,6 +154,12 @@
             android:layout_gravity="end"
             android:text="@string/speak" />
 
+        <TextView
+            android:id="@+id/photoTranslateError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/holo_red_dark" />
+
     </LinearLayout>
 
 </ScrollView>

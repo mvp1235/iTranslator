@@ -1,6 +1,11 @@
 package com.example.mvp.itranslator;
 
+import android.*;
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -16,7 +21,7 @@ public class HomeActivity extends AppCompatActivity {
 
     public static HashMap<String, String> languageInitials;
 
-    private ImageButton translateBtn, conversationBtn, photoBtn, profileBtn;
+    private ImageButton translateBtn, conversationBtn, photoBtn, placesBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,11 +30,12 @@ public class HomeActivity extends AppCompatActivity {
 
         setUpLanguageInitials();
 
+
         //Referencing to the UI elements for usage
         translateBtn = findViewById(R.id.translateBtn);
         conversationBtn = findViewById(R.id.conversationBtn);
         photoBtn = findViewById(R.id.photosBtn);
-        profileBtn = findViewById(R.id.profileBtn);
+        placesBtn = findViewById(R.id.placesBtn);
 
         setUpClickListeners();
     }
@@ -59,10 +65,10 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        profileBtn.setOnClickListener(new View.OnClickListener() {
+        placesBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                enterProfileMode();
+                enterPlacesMode();
             }
         });
     }
@@ -94,8 +100,9 @@ public class HomeActivity extends AppCompatActivity {
     /**
      * Take users to profile mode, where they can view/edit their personal information
      */
-    private void enterProfileMode() {
-
+    private void enterPlacesMode() {
+        Intent intent = new Intent(this, PlacesActivity.class);
+        startActivity(intent);
     }
 
     private void setUpLanguageInitials() {
