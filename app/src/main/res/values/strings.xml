@@ -18,7 +18,9 @@
     <string name="translationScreenHint">type in text, or choose a language and press Speak button for voice input</string>
     <string name="conversationTitle">Conversation</string>
     <string name="speechLang">Speech Language</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="userName">User\'s Name</string>
+    <string name="editProfile">Edit Profile</string>
+    <string name="userID">User\'s ID</string>
+    <string name="defaultSourceLanguage">Source Language</string>
+    <string name="speechLanguage">Speech Language</string>
 </resources>

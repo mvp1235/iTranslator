@@ -68,7 +68,7 @@ public class HomeActivity extends AppCompatActivity {
         placesBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                enterPlacesMode();
+                enterProfileMode();
             }
         });
     }
@@ -100,8 +100,8 @@ public class HomeActivity extends AppCompatActivity {
     /**
      * Take users to profile mode, where they can view/edit their personal information
      */
-    private void enterPlacesMode() {
-        Intent intent = new Intent(this, PlacesActivity.class);
+    private void enterProfileMode() {
+        Intent intent = new Intent(this, ProfileActivity.class);
         startActivity(intent);
     }
 
