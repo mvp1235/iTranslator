@@ -58,6 +58,7 @@ public class HomeActivity extends AppCompatActivity {
         setUpClickListeners();
     }
 
+
     /**
      * Set up listeners for four buttons mode on home screen
      */

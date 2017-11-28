@@ -2,6 +2,8 @@ package com.example.mvp.itranslator;
 
 import android.Manifest;
 import android.content.ActivityNotFoundException;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -63,6 +65,9 @@ public class ConversationActivity extends AppCompatActivity implements TextToSpe
 
     private TextView translatedText;
 
+    private ClipboardManager clipboardManager;
+    private ClipData clipData;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +77,8 @@ public class ConversationActivity extends AppCompatActivity implements TextToSpe
         ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
 
         setUpLanguagesArray();
+
+        clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 
         tts = new TextToSpeech(this, this);
 
@@ -117,6 +124,39 @@ public class ConversationActivity extends AppCompatActivity implements TextToSpe
 
         translatedText = findViewById(R.id.translatedText);
 
+        if (getDatabaseColumnValue(UserTable.LONG_PRESS_COPY).equalsIgnoreCase("1")) {
+            translatedText.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    copy(translatedText.getText().toString());
+                    return false;
+                }
+            });
+
+            textInput1.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    copy(textInput1.getText().toString());
+                    return false;
+                }
+            });
+
+            textInput2.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    copy(textInput2.getText().toString());
+                    return false;
+                }
+            });
+        }
+
+
+    }
+
+    public void copy(String text) {
+        clipData = ClipData.newPlainText("text", text);
+        clipboardManager.setPrimaryClip(clipData);
+        Toast.makeText(getApplicationContext(), "------Copied------\n" + text, Toast.LENGTH_SHORT).show();
     }
 
     /**

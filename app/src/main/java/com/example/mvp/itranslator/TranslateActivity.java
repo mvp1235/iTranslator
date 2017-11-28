@@ -1,6 +1,8 @@
 package com.example.mvp.itranslator;
 
 import android.content.ActivityNotFoundException;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Intent;
 import android.database.Cursor;
 import android.speech.RecognizerIntent;
@@ -50,6 +52,8 @@ public class TranslateActivity extends AppCompatActivity implements TextToSpeech
     private Spinner sourceLanguageSpinner, targetLanguageSpinner;
     private ImageButton swapBtn;
 
+    private ClipboardManager clipboardManager;
+    private ClipData clipData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +61,8 @@ public class TranslateActivity extends AppCompatActivity implements TextToSpeech
         setContentView(R.layout.activity_translate);
 
         setUpLanguagesArray();
+
+        clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 
         tts = new TextToSpeech(this, this);
 
@@ -117,13 +123,6 @@ public class TranslateActivity extends AppCompatActivity implements TextToSpeech
             }
         });
 
-        ShakeDetector.create(this, new ShakeDetector.OnShakeListener() {
-            @Override
-            public void OnShake() {
-                if (getDatabaseColumnValue(UserTable.SHAKE_TO_SPEAK).equalsIgnoreCase("1"))
-                    speakOutTranslatedText();
-            }
-        });
 
         swapBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,6 +132,32 @@ public class TranslateActivity extends AppCompatActivity implements TextToSpeech
             }
         });
 
+        if (getDatabaseColumnValue(UserTable.LONG_PRESS_COPY).equalsIgnoreCase("1")) {
+            resultTV.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    copy(resultTV.getText().toString());
+                    return false;
+                }
+            });
+        }
+
+        if (getDatabaseColumnValue(UserTable.SHAKE_TO_SPEAK).equalsIgnoreCase("1")) {
+            ShakeDetector.create(this, new ShakeDetector.OnShakeListener() {
+                @Override
+                public void OnShake() {
+                    if (getDatabaseColumnValue(UserTable.SHAKE_TO_SPEAK).equalsIgnoreCase("1"))
+                        speakOutTranslatedText();
+                }
+            });
+        }
+
+    }
+
+    public void copy(String text) {
+        clipData = ClipData.newPlainText("text", text);
+        clipboardManager.setPrimaryClip(clipData);
+        Toast.makeText(getApplicationContext(), "------Copied------\n" + text, Toast.LENGTH_SHORT).show();
     }
 
     @Override

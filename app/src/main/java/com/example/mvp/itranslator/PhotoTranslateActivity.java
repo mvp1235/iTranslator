@@ -1,6 +1,8 @@
 package com.example.mvp.itranslator;
 
 import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -58,11 +60,16 @@ public class PhotoTranslateActivity extends AppCompatActivity implements TextToS
     private AlertDialog photoActionDialog;
     private Bitmap photoBitmap = null;
 
+    private ClipboardManager clipboardManager;
+    private ClipData clipData;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo_translate);
+
+        clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 
         tts = new TextToSpeech(this, this);
 
@@ -97,18 +104,39 @@ public class PhotoTranslateActivity extends AppCompatActivity implements TextToS
             }
         });
 
-        ShakeDetector.create(this, new ShakeDetector.OnShakeListener() {
-            @Override
-            public void OnShake() {
-                if (getDatabaseColumnValue(UserTable.SHAKE_TO_SPEAK).equalsIgnoreCase("1"))
-                    speakOutTranslatedText();
-            }
-        });
+
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, languages);
         targetLanguageSpinner.setAdapter(adapter);
         String targetLang = getDatabaseColumnValue(UserTable.TARGET_LANG);
         targetLanguageSpinner.setSelection(languages.indexOf(targetLang));
+
+        if (getDatabaseColumnValue(UserTable.LONG_PRESS_COPY).equalsIgnoreCase("1")) {
+            resultTV.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    copy(resultTV.getText().toString());
+                    return false;
+                }
+            });
+
+            sourceTextTV.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    copy(sourceTextTV.getText().toString());
+                    return false;
+                }
+            });
+        }
+        if (getDatabaseColumnValue(UserTable.LONG_PRESS_COPY).equalsIgnoreCase("1")) {
+            ShakeDetector.create(this, new ShakeDetector.OnShakeListener() {
+                @Override
+                public void OnShake() {
+                    if (getDatabaseColumnValue(UserTable.SHAKE_TO_SPEAK).equalsIgnoreCase("1"))
+                        speakOutTranslatedText();
+                }
+            });
+        }
 
     }
 
@@ -124,6 +152,11 @@ public class PhotoTranslateActivity extends AppCompatActivity implements TextToS
         ShakeDetector.stop();
     }
 
+    public void copy(String text) {
+        clipData = ClipData.newPlainText("text", text);
+        clipboardManager.setPrimaryClip(clipData);
+        Toast.makeText(getApplicationContext(), "------Copied------\n" + text, Toast.LENGTH_SHORT).show();
+    }
 
     /**
      * Return value of a certain column in the user table
