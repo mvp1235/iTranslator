@@ -2,8 +2,8 @@ package com.example.mvp.itranslator;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.speech.tts.TextToSpeech;
@@ -19,13 +19,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -37,8 +35,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Locale;
 
 import static com.example.mvp.itranslator.HomeActivity.languageInitialsReversed;
@@ -48,7 +44,6 @@ public class PhotoTranslateActivity extends AppCompatActivity implements TextToS
 
     private static final int REQUEST_IMAGE_CAPTURE = 9000;
     private static final int REQUEST_GALLERY_PHOTO = 9001;
-    private static final int REQ_CODE_SPEECH_INPUT = 9002;
 
     private TextToSpeech tts;
 
@@ -102,10 +97,41 @@ public class PhotoTranslateActivity extends AppCompatActivity implements TextToS
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, languages);
         targetLanguageSpinner.setAdapter(adapter);
-        targetLanguageSpinner.setSelection(languages.indexOf("English"));
+        String targetLang = getDatabaseColumnValue(UserTable.TARGET_LANG);
+        targetLanguageSpinner.setSelection(languages.indexOf(targetLang));
 
     }
 
+    /**
+     * Return value of a certain column in the user table
+     * @param columnName the column to be return
+     * @return the value of the specified column name
+     */
+    private String getDatabaseColumnValue(String columnName) {
+        Cursor c = getContentResolver().query(MyContentProvider.CONTENT_URI, null, "_id = ?", new String[] {"1"}, UserTable._ID);
+
+        if (c.moveToFirst()) {
+            do {
+                if (columnName.equalsIgnoreCase(UserTable._ID)) {
+                    String name = c.getString(c.getColumnIndex(UserTable._ID));
+                    return name;
+                } else if (columnName.equalsIgnoreCase(UserTable.NAME)) {
+                    String gender = c.getString(c.getColumnIndex(UserTable.NAME));
+                    return gender;
+                } else if (columnName.equalsIgnoreCase(UserTable.SOURCE_LANG)) {
+                    String source = c.getString(c.getColumnIndex(UserTable.SOURCE_LANG));
+                    return source;
+                } else if (columnName.equalsIgnoreCase(UserTable.TARGET_LANG)) {
+                    String target = c.getString(c.getColumnIndex(UserTable.TARGET_LANG));
+                    return target;
+                } else if (columnName.equalsIgnoreCase(UserTable.SPEECH_LANG)) {
+                    String speech = c.getString(c.getColumnIndex(UserTable.SPEECH_LANG));
+                    return speech;
+                }
+            } while (c.moveToNext());
+        }
+        return null;
+    }
 
     @Override
     public void onDestroy() {

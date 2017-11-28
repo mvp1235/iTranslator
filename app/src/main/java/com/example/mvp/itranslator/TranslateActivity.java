@@ -2,6 +2,7 @@ package com.example.mvp.itranslator;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.database.Cursor;
 import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
@@ -68,23 +69,24 @@ public class TranslateActivity extends AppCompatActivity implements TextToSpeech
 
         swapBtn = findViewById(R.id.translateSwapBtn);
 
+        String targetLang = getDatabaseColumnValue(UserTable.TARGET_LANG);
+        String sourceLang = getDatabaseColumnValue(UserTable.SOURCE_LANG);
+        String speechLang = getDatabaseColumnValue(UserTable.SPEECH_LANG);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, languages);
 
 
         speechLanguageSpinner = findViewById(R.id.translateSpeechLangSpinner);
-        speechLanguageSpinner.setAdapter(adapter);
-        // Set default speech language to English
-        speechLanguageSpinner.setSelection(languages.indexOf("English"));
-
         sourceLanguageSpinner = findViewById(R.id.translateSourceLanguageSpinner);
         targetLanguageSpinner = findViewById(R.id.translateTargetLanguageSpinner);
 
+        speechLanguageSpinner.setAdapter(adapter);
         sourceLanguageSpinner.setAdapter(adapter);
         targetLanguageSpinner.setAdapter(adapter);
 
-        //Setting default languages for spinners
-        sourceLanguageSpinner.setSelection(languages.indexOf("English"));
-        targetLanguageSpinner.setSelection(languages.indexOf("Vietnamese"));
+        //Setting default languages for spinners based on user's data
+        speechLanguageSpinner.setSelection(languages.indexOf(speechLang));
+        sourceLanguageSpinner.setSelection(languages.indexOf(sourceLang));
+        targetLanguageSpinner.setSelection(languages.indexOf(targetLang));
 
         translateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,6 +124,37 @@ public class TranslateActivity extends AppCompatActivity implements TextToSpeech
             }
         });
 
+    }
+
+    /**
+     * Return value of a certain column in the user table
+     * @param columnName the column to be return
+     * @return the value of the specified column name
+     */
+    public String getDatabaseColumnValue(String columnName) {
+        Cursor c = getContentResolver().query(MyContentProvider.CONTENT_URI, null, "_id = ?", new String[] {"1"}, UserTable._ID);
+
+        if (c.moveToFirst()) {
+            do {
+                if (columnName.equalsIgnoreCase(UserTable._ID)) {
+                    String name = c.getString(c.getColumnIndex(UserTable._ID));
+                    return name;
+                } else if (columnName.equalsIgnoreCase(UserTable.NAME)) {
+                    String gender = c.getString(c.getColumnIndex(UserTable.NAME));
+                    return gender;
+                } else if (columnName.equalsIgnoreCase(UserTable.SOURCE_LANG)) {
+                    String source = c.getString(c.getColumnIndex(UserTable.SOURCE_LANG));
+                    return source;
+                } else if (columnName.equalsIgnoreCase(UserTable.TARGET_LANG)) {
+                    String target = c.getString(c.getColumnIndex(UserTable.TARGET_LANG));
+                    return target;
+                } else if (columnName.equalsIgnoreCase(UserTable.SPEECH_LANG)) {
+                    String speech = c.getString(c.getColumnIndex(UserTable.SPEECH_LANG));
+                    return speech;
+                }
+            } while (c.moveToNext());
+        }
+        return null;
     }
 
     private void swapLanguageSpinnerValues() {

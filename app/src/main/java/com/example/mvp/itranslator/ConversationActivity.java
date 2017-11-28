@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
@@ -80,7 +81,11 @@ public class ConversationActivity extends AppCompatActivity implements TextToSpe
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, languages);
         targetLanguage1.setAdapter(adapter);
-        targetLanguage1.setSelection(languages.indexOf("English"));   //set default person 1's language to English
+
+        //Retrieve user's source language and set value to spinner on start
+        //If language is supported, it will be set to that language. Otherwise, first value is chosen
+        String targetLang1 = getDatabaseColumnValue(UserTable.SOURCE_LANG);
+        targetLanguage1.setSelection(languages.indexOf(targetLang1));
 
         speakBtn1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,9 +99,12 @@ public class ConversationActivity extends AppCompatActivity implements TextToSpe
         textInput2 = findViewById(R.id.textSpeechInput2);
         speakBtn2 = findViewById(R.id.speakBtn2);
 
+        //Retrieve user's target language and set value to spinner on start
+        //If language is supported, it will be set to that language. Otherwise, first value is chosen
+        String targetLang2 = getDatabaseColumnValue(UserTable.TARGET_LANG);
         targetLanguage2 = findViewById(R.id.targetLanguageSpinner2);
         targetLanguage2.setAdapter(adapter);
-        targetLanguage2.setSelection(languages.indexOf("Vietnamese"));   //set default person 2's language to Vietnamese
+        targetLanguage2.setSelection(languages.indexOf(targetLang2));
 
         speakBtn2.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,6 +117,37 @@ public class ConversationActivity extends AppCompatActivity implements TextToSpe
 
         translatedText = findViewById(R.id.translatedText);
 
+    }
+
+    /**
+     * Return value of a certain column in the user table
+     * @param columnName the column to be return
+     * @return the value of the specified column name
+     */
+    public String getDatabaseColumnValue(String columnName) {
+        Cursor c = getContentResolver().query(MyContentProvider.CONTENT_URI, null, "_id = ?", new String[] {"1"}, UserTable._ID);
+
+        if (c.moveToFirst()) {
+            do {
+                if (columnName.equalsIgnoreCase(UserTable._ID)) {
+                    String name = c.getString(c.getColumnIndex(UserTable._ID));
+                    return name;
+                } else if (columnName.equalsIgnoreCase(UserTable.NAME)) {
+                    String gender = c.getString(c.getColumnIndex(UserTable.NAME));
+                    return gender;
+                } else if (columnName.equalsIgnoreCase(UserTable.SOURCE_LANG)) {
+                    String source = c.getString(c.getColumnIndex(UserTable.SOURCE_LANG));
+                    return source;
+                } else if (columnName.equalsIgnoreCase(UserTable.TARGET_LANG)) {
+                    String target = c.getString(c.getColumnIndex(UserTable.TARGET_LANG));
+                    return target;
+                } else if (columnName.equalsIgnoreCase(UserTable.SPEECH_LANG)) {
+                    String speech = c.getString(c.getColumnIndex(UserTable.SPEECH_LANG));
+                    return speech;
+                }
+            } while (c.moveToNext());
+        }
+        return null;
     }
 
     /**
