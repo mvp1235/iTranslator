@@ -458,6 +458,8 @@ public class HomeActivity extends AppCompatActivity {
         contentValues.put(UserTable.TARGET_LANG, "Vietnamese");
         contentValues.put(UserTable.SOURCE_LANG, "English");
         contentValues.put(UserTable.SPEECH_LANG, "English");
+        contentValues.put(UserTable.LONG_PRESS_COPY, 0);
+        contentValues.put(UserTable.SHAKE_TO_SPEAK, 0);
         getContentResolver().insert(MyContentProvider.CONTENT_URI, contentValues);
     }
 

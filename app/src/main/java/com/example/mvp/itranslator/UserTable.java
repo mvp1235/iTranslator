@@ -13,7 +13,8 @@ public class UserTable {
     static final String SOURCE_LANG = "sourceLanguage";
     static final String TARGET_LANG = "targetLanguage";
     static final String SPEECH_LANG = "speechLanguage";
-
+    static final String SHAKE_TO_SPEAK = "shakeToSpeak";
+    static final String LONG_PRESS_COPY = "longPressCopy";
 
 
     static final String TABLE_NAME = "user";
@@ -21,6 +22,8 @@ public class UserTable {
             "CREATE TABLE " + TABLE_NAME
                     + "(_id INTEGER PRIMARY KEY AUTOINCREMENT, "
                     + "name TEXT NOT NULL, "
+                    + "shakeToSpeak INTEGER NOT NULL, "
+                    + "longPressCopy INTEGER NOT NULL, "
                     + "sourceLanguage TEXT NOT NULL, "
                     + "targetLanguage TEXT NOT NULL, "
                     + "speechLanguage TEXT NOT NULL);";

@@ -26,4 +26,7 @@
     <string name="defaultSourceLanguage">Source Language</string>
     <string name="speechLanguage">Speech Language</string>
     <string name="profilePage">Profile Page</string>
+    <string name="saveProfile">Save Profile</string>
+    <string name="shakeToSpeak">Shake To Speak</string>
+    <string name="longPressCopy">Long Press Copy</string>
 </resources>

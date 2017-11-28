@@ -10,6 +10,7 @@ public class User {
     private String defaultSourceLanguage;
     private String defaultTargetLanguage;
     private String defaultSpeechInputLanguage;
+    private boolean shakeToSpeakEnabled;
 
     public User(String userID) {}
 
@@ -19,6 +20,15 @@ public class User {
         this.defaultSourceLanguage = defaultSourceLanguage;
         this.defaultTargetLanguage = defaultTargetLanguage;
         this.defaultSpeechInputLanguage = defaultSpeechInputLanguage;
+        shakeToSpeakEnabled = false;
+    }
+
+    public boolean shakeToSpeakEnabled() {
+        return shakeToSpeakEnabled;
+    }
+
+    public void setShakeToSpeak(boolean shakeToSpeakEnabled) {
+        this.shakeToSpeakEnabled = shakeToSpeakEnabled;
     }
 
     public String getUserID() {

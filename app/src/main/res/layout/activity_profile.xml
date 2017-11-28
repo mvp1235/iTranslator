@@ -132,6 +132,54 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:background="@color/colorLightBlue"
+            android:text="@string/shakeToSpeak"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/userShakeToSpeak"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
+            android:background="@color/light_gray_background"
+            android:paddingHorizontal="10dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:background="@color/colorLightBlue"
+            android:text="@string/longPressCopy"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/userLongPressCopy"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
+            android:background="@color/light_gray_background"
+            android:paddingHorizontal="10dp" />
+
+    </LinearLayout>
+
 
 
 </LinearLayout>

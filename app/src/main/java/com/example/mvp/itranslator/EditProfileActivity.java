@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 
@@ -17,6 +18,7 @@ public class EditProfileActivity extends AppCompatActivity {
     private EditText userNameET;
     private Spinner userSourceLanguageSpinner, userTargetLanguageSpinner, userSpeechLanguageSpinner;
     private Button saveBtn;
+    private CheckBox shakeToSpeakCheckBox, longPressCopyCheckBox;
 
 
     @Override
@@ -29,6 +31,8 @@ public class EditProfileActivity extends AppCompatActivity {
         userSourceLanguageSpinner = findViewById(R.id.sourceLanguageSpinner);
         userTargetLanguageSpinner = findViewById(R.id.targetLanguageSpinner);
         userSpeechLanguageSpinner = findViewById(R.id.speechLanguageSpinner);
+        shakeToSpeakCheckBox = findViewById(R.id.shakeToSpeakCheckBox);
+        longPressCopyCheckBox = findViewById(R.id.longPressCopyCheckBox);
 
         Intent receivedIntent = getIntent();
 
@@ -36,6 +40,8 @@ public class EditProfileActivity extends AppCompatActivity {
         String source = receivedIntent.getStringExtra(ProfileActivity.SOURCE_LANGUAGE);
         String target = receivedIntent.getStringExtra(ProfileActivity.TARGET_LANGUAGE);
         String speech = receivedIntent.getStringExtra(ProfileActivity.SPEECH_LANGUAGE);
+        int shakeToSpeak = receivedIntent.getIntExtra(ProfileActivity.SHAKE_TO_SPEAK, 0);
+        int longPressCopy = receivedIntent.getIntExtra(ProfileActivity.LONG_PRESS_COPY, 0);
 
         userNameET.setText(name);
 
@@ -56,6 +62,16 @@ public class EditProfileActivity extends AppCompatActivity {
             userSpeechLanguageSpinner.setSelection(languages.indexOf(speech));
         }
 
+        if (shakeToSpeak == 1) {
+            shakeToSpeakCheckBox.setChecked(true);
+        } else
+            shakeToSpeakCheckBox.setChecked(false);
+
+        if (longPressCopy == 1) {
+            longPressCopyCheckBox.setChecked(true);
+        } else
+            longPressCopyCheckBox.setChecked(false);
+
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,18 +82,36 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void saveProfile() {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(UserTable.NAME, userNameET.getText().toString());
-        contentValues.put(UserTable.TARGET_LANG, userTargetLanguageSpinner.getSelectedItem().toString());
-        contentValues.put(UserTable.SOURCE_LANG, userSourceLanguageSpinner.getSelectedItem().toString());
-        contentValues.put(UserTable.SPEECH_LANG, userSpeechLanguageSpinner.getSelectedItem().toString());
-        getContentResolver().update(MyContentProvider.CONTENT_URI, contentValues, "_id = ?", new String[] {"1"});
-
         Intent intent = new Intent();
         intent.putExtra(UserTable.NAME, userNameET.getText().toString());
         intent.putExtra(UserTable.TARGET_LANG, userTargetLanguageSpinner.getSelectedItem().toString());
         intent.putExtra(UserTable.SOURCE_LANG, userSourceLanguageSpinner.getSelectedItem().toString());
         intent.putExtra(UserTable.SPEECH_LANG, userSpeechLanguageSpinner.getSelectedItem().toString());
+
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(UserTable.NAME, userNameET.getText().toString());
+        contentValues.put(UserTable.TARGET_LANG, userTargetLanguageSpinner.getSelectedItem().toString());
+        contentValues.put(UserTable.SOURCE_LANG, userSourceLanguageSpinner.getSelectedItem().toString());
+        contentValues.put(UserTable.SPEECH_LANG, userSpeechLanguageSpinner.getSelectedItem().toString());
+
+        if (shakeToSpeakCheckBox.isChecked()) {
+            intent.putExtra(UserTable.SHAKE_TO_SPEAK, 1);
+            contentValues.put(UserTable.SHAKE_TO_SPEAK, 1);
+        } else {
+            intent.putExtra(UserTable.SHAKE_TO_SPEAK, 0);
+            contentValues.put(UserTable.SHAKE_TO_SPEAK, 0);
+        }
+
+        if (longPressCopyCheckBox.isChecked()) {
+            intent.putExtra(UserTable.LONG_PRESS_COPY, 1);
+            contentValues.put(UserTable.LONG_PRESS_COPY, 1);
+        } else {
+            intent.putExtra(UserTable.LONG_PRESS_COPY, 0);
+            contentValues.put(UserTable.LONG_PRESS_COPY, 0);
+        }
+
+        getContentResolver().update(MyContentProvider.CONTENT_URI, contentValues, "_id = ?", new String[] {"1"});
 
         setResult(RESULT_OK, intent);
         finish();

@@ -187,12 +187,12 @@ public class MyContentProvider extends ContentProvider {
     private void checkColumns(String[] projection) {
         String[] available = {UserTable._ID, UserTable.NAME,
                 UserTable.SOURCE_LANG, UserTable.TARGET_LANG,
-                UserTable.SPEECH_LANG};
+                UserTable.SPEECH_LANG, UserTable.SHAKE_TO_SPEAK, UserTable.LONG_PRESS_COPY};
 
         if (projection != null) {
-            HashSet<String> requestedColumns = new HashSet<String>(
+            HashSet<String> requestedColumns = new HashSet<>(
                     Arrays.asList(projection));
-            HashSet<String> availableColumns = new HashSet<String>(
+            HashSet<String> availableColumns = new HashSet<>(
                     Arrays.asList(available));
             // check if all columns which are requested are available
             if (!availableColumns.containsAll(requestedColumns)) {

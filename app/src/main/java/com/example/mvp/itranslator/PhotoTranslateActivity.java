@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -26,6 +27,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.github.tbouron.shakedetector.library.ShakeDetector;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -95,12 +97,33 @@ public class PhotoTranslateActivity extends AppCompatActivity implements TextToS
             }
         });
 
+        ShakeDetector.create(this, new ShakeDetector.OnShakeListener() {
+            @Override
+            public void OnShake() {
+                if (getDatabaseColumnValue(UserTable.SHAKE_TO_SPEAK).equalsIgnoreCase("1"))
+                    speakOutTranslatedText();
+            }
+        });
+
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, languages);
         targetLanguageSpinner.setAdapter(adapter);
         String targetLang = getDatabaseColumnValue(UserTable.TARGET_LANG);
         targetLanguageSpinner.setSelection(languages.indexOf(targetLang));
 
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ShakeDetector.start();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        ShakeDetector.stop();
+    }
+
 
     /**
      * Return value of a certain column in the user table
@@ -127,6 +150,12 @@ public class PhotoTranslateActivity extends AppCompatActivity implements TextToS
                 } else if (columnName.equalsIgnoreCase(UserTable.SPEECH_LANG)) {
                     String speech = c.getString(c.getColumnIndex(UserTable.SPEECH_LANG));
                     return speech;
+                } else if (columnName.equalsIgnoreCase(UserTable.SHAKE_TO_SPEAK)) {
+                    int shakeToSpeak = c.getInt(c.getColumnIndex(UserTable.SHAKE_TO_SPEAK));
+                    return Integer.toString(shakeToSpeak);
+                } else if (columnName.equalsIgnoreCase(UserTable.LONG_PRESS_COPY)) {
+                    int longPressCopy = c.getInt(c.getColumnIndex(UserTable.LONG_PRESS_COPY));
+                    return Integer.toString(longPressCopy);
                 }
             } while (c.moveToNext());
         }
@@ -140,6 +169,7 @@ public class PhotoTranslateActivity extends AppCompatActivity implements TextToS
             tts.stop();
             tts.shutdown();
         }
+        ShakeDetector.destroy();
         super.onDestroy();
     }
 

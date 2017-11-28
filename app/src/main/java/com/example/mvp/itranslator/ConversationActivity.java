@@ -144,6 +144,12 @@ public class ConversationActivity extends AppCompatActivity implements TextToSpe
                 } else if (columnName.equalsIgnoreCase(UserTable.SPEECH_LANG)) {
                     String speech = c.getString(c.getColumnIndex(UserTable.SPEECH_LANG));
                     return speech;
+                } else if (columnName.equalsIgnoreCase(UserTable.SHAKE_TO_SPEAK)) {
+                    int shakeToSpeak = c.getInt(c.getColumnIndex(UserTable.SHAKE_TO_SPEAK));
+                    return Integer.toString(shakeToSpeak);
+                } else if (columnName.equalsIgnoreCase(UserTable.LONG_PRESS_COPY)) {
+                    int longPressCopy = c.getInt(c.getColumnIndex(UserTable.LONG_PRESS_COPY));
+                    return Integer.toString(longPressCopy);
                 }
             } while (c.moveToNext());
         }
