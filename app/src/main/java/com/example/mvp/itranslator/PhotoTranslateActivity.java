@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -63,11 +64,15 @@ public class PhotoTranslateActivity extends AppCompatActivity implements TextToS
     private ClipboardManager clipboardManager;
     private ClipData clipData;
 
+    private PhotoTranslation photoTranslation;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo_translate);
+
+        photoTranslation = new PhotoTranslation();
 
         clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 
@@ -108,6 +113,20 @@ public class PhotoTranslateActivity extends AppCompatActivity implements TextToS
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, languages);
         targetLanguageSpinner.setAdapter(adapter);
+
+        targetLanguageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selected = targetLanguageSpinner.getItemAtPosition(position).toString();
+                photoTranslation.setTargetLanguage(selected);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         String targetLang = getDatabaseColumnValue(UserTable.TARGET_LANG);
         targetLanguageSpinner.setSelection(languages.indexOf(targetLang));
 
@@ -128,6 +147,8 @@ public class PhotoTranslateActivity extends AppCompatActivity implements TextToS
                 }
             });
         }
+
+        //Setting listener for shaking motion sensor
         if (getDatabaseColumnValue(UserTable.LONG_PRESS_COPY).equalsIgnoreCase("1")) {
             ShakeDetector.create(this, new ShakeDetector.OnShakeListener() {
                 @Override
@@ -207,8 +228,8 @@ public class PhotoTranslateActivity extends AppCompatActivity implements TextToS
     }
 
     private void speakOutTranslatedText() {
-        String text = resultTV.getText().toString();
-        String language = targetLanguageSpinner.getSelectedItem().toString();
+        String text = photoTranslation.getTranslatedResult();
+        String language = photoTranslation.getTargetLanguage();
         language = HomeActivity.languageInitials.get(language);
         int languageAvailable = tts.setLanguage(new Locale(language));
         if (languageAvailable == TextToSpeech.LANG_MISSING_DATA
@@ -279,13 +300,18 @@ public class PhotoTranslateActivity extends AppCompatActivity implements TextToS
                                 JSONObject result = textAnnotations.getJSONObject(0);
                                 String capturedText = result.getString("description");
                                 String language = result.getString("locale");
+
+                                photoTranslation.setSourceLanguage(languageInitialsReversed.get(language));
                                 detectedLangTV.setText(languageInitialsReversed.get(language));
+
+                                photoTranslation.setSourceText(capturedText);
                                 sourceTextTV.setText(capturedText);
                                 translate(capturedText);
 
                             } else {
                                 //Display the reason why the translation is failing
                                 resultTV.setText("Cannot detect the text from the photo. Please give another shot.");
+                                photoTranslation.setTranslatedResult("");
                             }
 
                         } catch (JSONException e) {
@@ -308,7 +334,7 @@ public class PhotoTranslateActivity extends AppCompatActivity implements TextToS
         String url = "https://translation.googleapis.com/language/translate/v2";
 //        String sourceString = resultTV.getText().toString();
 
-        String targetLanguage = targetLanguageSpinner.getSelectedItem().toString();
+        String targetLanguage = photoTranslation.getTargetLanguage();
         targetLanguage = HomeActivity.languageInitials.get(targetLanguage);
 
         try {
@@ -330,11 +356,15 @@ public class PhotoTranslateActivity extends AppCompatActivity implements TextToS
                                 JSONObject data  = reader.getJSONObject("data");
                                 JSONArray translations = data.getJSONArray("translations");
                                 String translatedText = translations.getJSONObject(0).getString("translatedText");
+
+                                photoTranslation.setTranslatedResult(translatedText);
                                 resultTV.setText(translatedText);
                             } else {
                                 //Display the reason why the translation is failing
                                 JSONObject error  = reader.getJSONObject("error");
                                 String errorMessage = error.getString("message");
+
+                                photoTranslation.setTranslatedResult("");
                                 resultTV.setText(errorMessage);
                             }
 
