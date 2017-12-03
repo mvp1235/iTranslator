@@ -180,6 +180,17 @@
 
     </LinearLayout>
 
+    <com.google.android.gms.common.SignInButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/googleSignInBtn">
+    </com.google.android.gms.common.SignInButton>
+
+    <Button
+        android:id="@+id/logOutBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/logOut" />
 
 
 </LinearLayout>

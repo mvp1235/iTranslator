@@ -29,4 +29,5 @@
     <string name="saveProfile">Save Profile</string>
     <string name="shakeToSpeak">Shake To Speak</string>
     <string name="longPressCopy">Long Press Copy</string>
+    <string name="logOut">Log Out</string>
 </resources>
