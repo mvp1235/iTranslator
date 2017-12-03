@@ -1,196 +1,231 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:layout_margin="20dp"
     tools:context="com.example.mvp.itranslator.ProfileActivity">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/profilePage"
-        android:textAlignment="center"
-        android:textColor="@color/colorAccent"
-        android:textSize="24sp"
-        android:layout_marginBottom="10dp"
-        android:textStyle="bold" />
-
-    <Button
-        android:id="@+id/editProfileBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:text="@string/editProfile" />
-
-
-    <TextView
-        android:id="@+id/userName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:text="@string/userName"
-        android:textAlignment="viewStart"
-        android:textSize="18sp"
-        android:textStyle="bold" />
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="5dp"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="3"
-            android:background="@color/colorLightBlue"
-            android:text="@string/userID"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/profilePage"
+            android:textAlignment="center"
+            android:textColor="@color/colorAccent"
+            android:textSize="24sp"
+            android:layout_marginBottom="10dp"
             android:textStyle="bold" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal">
+
+            <com.google.android.gms.common.SignInButton
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginEnd="5dp"
+                android:id="@+id/googleSignInBtn">
+            </com.google.android.gms.common.SignInButton>
+
+            <Button
+                android:id="@+id/logOutBtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:background="?attr/colorError"
+                android:text="@string/logOut"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginEnd="5dp"
+                android:textColor="@android:color/white" />
+
+            <Button
+                android:id="@+id/editProfileBtn"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:background="@android:color/holo_orange_light"
+                android:text="@string/edit"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginEnd="5dp"
+                android:textColor="@android:color/white" />
+
+        </LinearLayout>
+
+
+
         <TextView
-            android:id="@+id/userID"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="5"
-            android:background="@color/light_gray_background"
-            android:paddingHorizontal="10dp" />
+            android:id="@+id/userName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:text="@string/userName"
+            android:textAlignment="viewStart"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="5dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
+                android:background="@color/colorLightBlue"
+                android:text="@string/userID"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/userID"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="5"
+                android:background="@color/light_gray_background"
+                android:paddingHorizontal="10dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
+                android:text="@string/defaultSourceLanguage"
+                android:background="@color/colorLightBlue"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/userSourceLanguage"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="5"
+                android:background="@color/light_gray_background"
+                android:paddingHorizontal="10dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
+                android:text="@string/targetLanguage"
+                android:background="@color/colorLightBlue"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/userTargetLanguage"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@color/light_gray_background"
+                android:paddingHorizontal="10dp"
+                android:layout_weight="5" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
+                android:text="@string/speechLanguage"
+                android:background="@color/colorLightBlue"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/userSpeechLanguage"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="5"
+                android:background="@color/light_gray_background"
+                android:paddingHorizontal="10dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
+                android:background="@color/colorLightBlue"
+                android:text="@string/shakeToSpeak"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/userShakeToSpeak"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="5"
+                android:background="@color/light_gray_background"
+                android:paddingHorizontal="10dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
+                android:background="@color/colorLightBlue"
+                android:text="@string/longPressCopy"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/userLongPressCopy"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="5"
+                android:background="@color/light_gray_background"
+                android:paddingHorizontal="10dp" />
+
+        </LinearLayout>
+
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="3"
-            android:text="@string/defaultSourceLanguage"
-            android:background="@color/colorLightBlue"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/userSourceLanguage"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="5"
-            android:background="@color/light_gray_background"
-            android:paddingHorizontal="10dp" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="3"
-            android:text="@string/targetLanguage"
-            android:background="@color/colorLightBlue"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/userTargetLanguage"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:background="@color/light_gray_background"
-            android:paddingHorizontal="10dp"
-            android:layout_weight="5" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="3"
-            android:text="@string/speechLanguage"
-            android:background="@color/colorLightBlue"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/userSpeechLanguage"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="5"
-            android:background="@color/light_gray_background"
-            android:paddingHorizontal="10dp" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="3"
-            android:background="@color/colorLightBlue"
-            android:text="@string/shakeToSpeak"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/userShakeToSpeak"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="5"
-            android:background="@color/light_gray_background"
-            android:paddingHorizontal="10dp" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="3"
-            android:background="@color/colorLightBlue"
-            android:text="@string/longPressCopy"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/userLongPressCopy"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="5"
-            android:background="@color/light_gray_background"
-            android:paddingHorizontal="10dp" />
-
-    </LinearLayout>
-
-    <com.google.android.gms.common.SignInButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/googleSignInBtn">
-    </com.google.android.gms.common.SignInButton>
-
-    <Button
-        android:id="@+id/logOutBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/logOut" />
-
-
-</LinearLayout>
+</ScrollView>

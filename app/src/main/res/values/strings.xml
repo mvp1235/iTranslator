@@ -30,4 +30,6 @@
     <string name="shakeToSpeak">Shake To Speak</string>
     <string name="longPressCopy">Long Press Copy</string>
     <string name="logOut">Log Out</string>
+    <string name="save">Save</string>
+    <string name="edit">Edit</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.example.mvp.itranslator;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
@@ -31,7 +32,7 @@ public class ProfileActivity extends AppCompatActivity {
     private static final String TAG = "GOOGLE AUTH";
     private static final int EDIT_PROFILE_REQUEST_CODE = 500;
     private static final int RC_SIGN_IN = 600;
-    
+
     public static String NAME = "name";
     public static String SOURCE_LANGUAGE = "sourceLanguage";
     public static String TARGET_LANGUAGE = "targetLanguage";
@@ -47,10 +48,14 @@ public class ProfileActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
+    private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        progressDialog = new ProgressDialog(this);
 
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -59,9 +64,11 @@ public class ProfileActivity extends AppCompatActivity {
                 if (firebaseAuth.getCurrentUser() != null) {    //user is signed in
                     googleSignInBtn.setVisibility(View.GONE);
                     logOutBtn.setVisibility(View.VISIBLE);
+                    progressDialog.dismiss();
                 } else {    //user is logged out
                     googleSignInBtn.setVisibility(View.VISIBLE);
                     logOutBtn.setVisibility(View.GONE);
+                    progressDialog.dismiss();
                 }
             }
         };
@@ -151,12 +158,16 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void signIn() {
+        progressDialog.setMessage("Signing in...");
+        progressDialog.show();
         Auth.GoogleSignInApi.signOut(mGoogleApiClient);
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
     private void signOut() {
+        progressDialog.setMessage("Signing out...");
+        progressDialog.show();
         mAuth.signOut();
     }
 
