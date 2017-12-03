@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -55,12 +56,16 @@ public class TranslateActivity extends AppCompatActivity implements TextToSpeech
     private ClipboardManager clipboardManager;
     private ClipData clipData;
 
+    private Translation translation;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_translate);
 
         setUpLanguagesArray();
+
+        translation = new Translation();
 
         clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 
@@ -76,9 +81,16 @@ public class TranslateActivity extends AppCompatActivity implements TextToSpeech
 
         swapBtn = findViewById(R.id.translateSwapBtn);
 
+        //Retrieve user defined value for target, source, and speech langauge from local SQLite database
         String targetLang = getDatabaseColumnValue(UserTable.TARGET_LANG);
         String sourceLang = getDatabaseColumnValue(UserTable.SOURCE_LANG);
         String speechLang = getDatabaseColumnValue(UserTable.SPEECH_LANG);
+
+        //Setting up default Translation object with target, source, and speech language retrieved above
+        translation.setTargetLanguage(targetLang);
+        translation.setSourceLanguage(sourceLang);
+        translation.setSpeechLanguage(speechLang);
+
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, languages);
 
 
@@ -95,6 +107,47 @@ public class TranslateActivity extends AppCompatActivity implements TextToSpeech
         sourceLanguageSpinner.setSelection(languages.indexOf(sourceLang));
         targetLanguageSpinner.setSelection(languages.indexOf(targetLang));
 
+        speechLanguageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selected = speechLanguageSpinner.getItemAtPosition(position).toString();
+                translation.setSpeechLanguage(selected);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        sourceLanguageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selected = sourceLanguageSpinner.getItemAtPosition(position).toString();
+                translation.setSourceLanguage(selected);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        targetLanguageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selected = targetLanguageSpinner.getItemAtPosition(position).toString();
+                translation.setTargetLanguage(selected);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+
         translateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -110,7 +163,7 @@ public class TranslateActivity extends AppCompatActivity implements TextToSpeech
         speakBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String selectedLanguage = speechLanguageSpinner.getSelectedItem().toString();
+                String selectedLanguage = translation.getSpeechLanguage();
                 selectedLanguage = HomeActivity.languageInitials.get(selectedLanguage);
                 promptSpeechInput(selectedLanguage);
             }
@@ -132,6 +185,7 @@ public class TranslateActivity extends AppCompatActivity implements TextToSpeech
             }
         });
 
+        //Check if long press copy feature is enabled
         if (getDatabaseColumnValue(UserTable.LONG_PRESS_COPY).equalsIgnoreCase("1")) {
             resultTV.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
@@ -142,6 +196,7 @@ public class TranslateActivity extends AppCompatActivity implements TextToSpeech
             });
         }
 
+        //check if shake to speak feature is enabled
         if (getDatabaseColumnValue(UserTable.SHAKE_TO_SPEAK).equalsIgnoreCase("1")) {
             ShakeDetector.create(this, new ShakeDetector.OnShakeListener() {
                 @Override
@@ -154,6 +209,10 @@ public class TranslateActivity extends AppCompatActivity implements TextToSpeech
 
     }
 
+    /**
+     * Copy the text into Clipboard manager
+     * @param text the text to be copied
+     */
     public void copy(String text) {
         clipData = ClipData.newPlainText("text", text);
         clipboardManager.setPrimaryClip(clipData);
@@ -211,10 +270,15 @@ public class TranslateActivity extends AppCompatActivity implements TextToSpeech
     }
 
     private void swapLanguageSpinnerValues() {
+        //UI update
         int source = sourceLanguageSpinner.getSelectedItemPosition();
         int target = targetLanguageSpinner.getSelectedItemPosition();
         sourceLanguageSpinner.setSelection(target);
         targetLanguageSpinner.setSelection(source);
+
+        //model update
+        translation.swapLanguages();
+
         clearInputs();
     }
 
@@ -222,6 +286,10 @@ public class TranslateActivity extends AppCompatActivity implements TextToSpeech
         textInput.setText("");
         resultTV.setText("");
         errorTV.setText("");
+
+        //model update
+        translation.setInputText("");
+        translation.setTranslatedText("");
     }
 
     /**
@@ -253,7 +321,8 @@ public class TranslateActivity extends AppCompatActivity implements TextToSpeech
 
                     ArrayList<String> result = data
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    textInput.setText(result.get(0));
+                    translation.setInputText(result.get(0));
+                    textInput.setText(translation.getInputText());
                 }
                 break;
             }
@@ -271,12 +340,15 @@ public class TranslateActivity extends AppCompatActivity implements TextToSpeech
         super.onDestroy();
     }
 
+    /**
+     * Enable Text-To-Speech for the translated text inside resultTV
+     */
     private void speakOutTranslatedText() {
-        String text = resultTV.getText().toString();
+        String text = translation.getTranslatedText();
         if (text.isEmpty())
             return;
 
-        String language = targetLanguageSpinner.getSelectedItem().toString();
+        String language = translation.getTargetLanguage();
         language = HomeActivity.languageInitials.get(language);
         int languageAvailable = tts.setLanguage(new Locale(language));
         if (languageAvailable == TextToSpeech.LANG_MISSING_DATA
@@ -289,12 +361,16 @@ public class TranslateActivity extends AppCompatActivity implements TextToSpeech
         }
     }
 
+    /**
+     * Send input text to Google Cloud Translation service and retrieve the translated text
+     */
     private void translate() {
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = "https://translation.googleapis.com/language/translate/v2";
-        String sourceString = textInput.getText().toString();
+        translation.setInputText(textInput.getText().toString());
+        String sourceString = translation.getInputText();
 
-        String targetLanguage = targetLanguageSpinner.getSelectedItem().toString();
+        String targetLanguage = translation.getTargetLanguage();
         targetLanguage = HomeActivity.languageInitials.get(targetLanguage);
 
         try {
@@ -316,11 +392,13 @@ public class TranslateActivity extends AppCompatActivity implements TextToSpeech
                                 JSONObject data  = reader.getJSONObject("data");
                                 JSONArray translations = data.getJSONArray("translations");
                                 String translatedText = translations.getJSONObject(0).getString("translatedText");
+                                translation.setTranslatedText(translatedText);
                                 resultTV.setText(translatedText);
                             } else {
                                 //Display the reason why the translation is failing
                                 JSONObject error  = reader.getJSONObject("error");
                                 String errorMessage = error.getString("message");
+                                translation.setTranslatedText("");
                                 resultTV.setText(errorMessage);
                             }
 
@@ -332,6 +410,7 @@ public class TranslateActivity extends AppCompatActivity implements TextToSpeech
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                translation.setTranslatedText("");
                 resultTV.setText("That didn't work!");
             }
         });

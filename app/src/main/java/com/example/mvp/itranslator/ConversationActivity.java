@@ -15,6 +15,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -68,6 +69,8 @@ public class ConversationActivity extends AppCompatActivity implements TextToSpe
     private ClipboardManager clipboardManager;
     private ClipData clipData;
 
+    private Conversation conversation;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +80,8 @@ public class ConversationActivity extends AppCompatActivity implements TextToSpe
         ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
 
         setUpLanguagesArray();
+
+        conversation = new Conversation();
 
         clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 
@@ -89,15 +94,29 @@ public class ConversationActivity extends AppCompatActivity implements TextToSpe
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, languages);
         targetLanguage1.setAdapter(adapter);
 
+        targetLanguage1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selected = targetLanguage1.getItemAtPosition(position).toString();
+                conversation.setFirstLanguage(selected);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         //Retrieve user's source language and set value to spinner on start
         //If language is supported, it will be set to that language. Otherwise, first value is chosen
         String targetLang1 = getDatabaseColumnValue(UserTable.SOURCE_LANG);
         targetLanguage1.setSelection(languages.indexOf(targetLang1));
+        conversation.setFirstLanguage(targetLang1);
 
         speakBtn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String selectedLanguage = targetLanguage1.getSelectedItem().toString();
+                String selectedLanguage = conversation.getFirstLanguage();
                 selectedLanguage = HomeActivity.languageInitials.get(selectedLanguage);
                 promptSpeechInput1(selectedLanguage);
             }
@@ -111,12 +130,27 @@ public class ConversationActivity extends AppCompatActivity implements TextToSpe
         String targetLang2 = getDatabaseColumnValue(UserTable.TARGET_LANG);
         targetLanguage2 = findViewById(R.id.targetLanguageSpinner2);
         targetLanguage2.setAdapter(adapter);
+
+        targetLanguage2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selected = targetLanguage2.getItemAtPosition(position).toString();
+                conversation.setSecondLanguage(selected);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         targetLanguage2.setSelection(languages.indexOf(targetLang2));
+        conversation.setSecondLanguage(targetLang2);
 
         speakBtn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String selectedLanguage = targetLanguage2.getSelectedItem().toString();
+                String selectedLanguage = conversation.getSecondLanguage();
                 selectedLanguage = HomeActivity.languageInitials.get(selectedLanguage);
                 promptSpeechInput2(selectedLanguage);
             }
@@ -153,6 +187,10 @@ public class ConversationActivity extends AppCompatActivity implements TextToSpe
 
     }
 
+    /**
+     * Copy the text into Clipboard manager
+     * @param text the text to be copied
+     */
     public void copy(String text) {
         clipData = ClipData.newPlainText("text", text);
         clipboardManager.setPrimaryClip(clipData);
@@ -257,8 +295,10 @@ public class ConversationActivity extends AppCompatActivity implements TextToSpe
 
                     ArrayList<String> result = data
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    textInput1.setText(result.get(0));
-                    translate(result.get(0), 1);
+                    String output = result.get(0);
+                    conversation.setFirstInput(output);
+                    textInput1.setText(output);
+                    translate(output, 1);
                 }
                 break;
             }
@@ -268,8 +308,10 @@ public class ConversationActivity extends AppCompatActivity implements TextToSpe
 
                     ArrayList<String> result = data
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    textInput2.setText(result.get(0));
-                    translate(result.get(0), 2);
+                    String output = result.get(0);
+                    conversation.setSecondInput(output);
+                    textInput2.setText(output);
+                    translate(output, 2);
                 }
                 break;
             }
@@ -289,9 +331,9 @@ public class ConversationActivity extends AppCompatActivity implements TextToSpe
 
         String targetLanguage;
         if (personNum == 1)
-            targetLanguage = targetLanguage2.getSelectedItem().toString();
+            targetLanguage = conversation.getSecondLanguage();
         else
-            targetLanguage = targetLanguage1.getSelectedItem().toString();
+            targetLanguage = conversation.getFirstLanguage();
 
         targetLanguage = HomeActivity.languageInitials.get(targetLanguage);
 
@@ -314,14 +356,15 @@ public class ConversationActivity extends AppCompatActivity implements TextToSpe
                                 JSONObject data  = reader.getJSONObject("data");
                                 JSONArray translations = data.getJSONArray("translations");
                                 String result = translations.getJSONObject(0).getString("translatedText");
+                                conversation.setTranslatedText(result);
                                 translatedText.setText(result);
 
-                                String text = translatedText.getText().toString();
+                                String text = conversation.getTranslatedText();
                                 String language = "";
                                 if (personNum == 1)
-                                    language = targetLanguage2.getSelectedItem().toString();
+                                    language = conversation.getSecondLanguage();
                                 else
-                                    language = targetLanguage1.getSelectedItem().toString();
+                                    language = conversation.getFirstLanguage();
 
                                 language = HomeActivity.languageInitials.get(language);
 
@@ -338,6 +381,7 @@ public class ConversationActivity extends AppCompatActivity implements TextToSpe
                                 JSONObject error  = reader.getJSONObject("error");
                                 String errorMessage = error.getString("message");
                                 translatedText.setText(errorMessage);
+                                conversation.setTranslatedText("");
                             }
 
                         } catch (JSONException e) {
@@ -431,38 +475,3 @@ public class ConversationActivity extends AppCompatActivity implements TextToSpe
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
