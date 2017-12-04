@@ -1,9 +1,22 @@
 package com.example.mvp.itranslator;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,9 +41,18 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import org.w3c.dom.Text;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 public class ProfileActivity extends AppCompatActivity {
+
     private static final String TAG = "GOOGLE AUTH";
     private static final int EDIT_PROFILE_REQUEST_CODE = 500;
+    private static final int LOCATION_REQUEST = 501;
     private static final int RC_SIGN_IN = 600;
 
     public static String NAME = "name";
@@ -41,8 +63,9 @@ public class ProfileActivity extends AppCompatActivity {
     public static String LONG_PRESS_COPY = "longPressCopy";
 
     private TextView userNameTV, userIdTV, userSourceLanguageTV, userTargetLanguageTV, userSpeechLanguageTV, userShakeToSpeakTV, userLongPressCopyTV;
-    private Button editProfileBtn, logOutBtn;
+    private Button editProfileBtn, logOutBtn, getCurrentLocationBtn;
     private SignInButton googleSignInBtn;
+    private TextView locationTV;
 
     private GoogleApiClient mGoogleApiClient;
     private FirebaseAuth mAuth;
@@ -50,10 +73,16 @@ public class ProfileActivity extends AppCompatActivity {
 
     private ProgressDialog progressDialog;
 
+    private LocationManager locationManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST);
+
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         progressDialog = new ProgressDialog(this);
 
@@ -82,6 +111,8 @@ public class ProfileActivity extends AppCompatActivity {
         userLongPressCopyTV = findViewById(R.id.userLongPressCopy);
         googleSignInBtn = findViewById(R.id.googleSignInBtn);
         logOutBtn = findViewById(R.id.logOutBtn);
+        getCurrentLocationBtn = findViewById(R.id.getCurrentLocationBtn);
+        locationTV = findViewById(R.id.locationTV);
 
         editProfileBtn = findViewById(R.id.editProfileBtn);
 
@@ -149,6 +180,19 @@ public class ProfileActivity extends AppCompatActivity {
                 signOut();
             }
         });
+
+        getCurrentLocationBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    buildAlertMessageNoGps();
+
+                } else if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    getLocation();
+                }
+            }
+        });
+
     }
 
     @Override
@@ -157,13 +201,111 @@ public class ProfileActivity extends AppCompatActivity {
         mAuth.addAuthStateListener(mAuthListener);
     }
 
+    private void getLocation() {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission
+                (this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST);
+
+        } else {
+            Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+            Location location1 = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+            Location location2 = locationManager.getLastKnownLocation(LocationManager. PASSIVE_PROVIDER);
+
+            double lat = 0;
+            double lng = 0;
+
+            if (location != null) {
+                lat = location.getLatitude();
+                lng = location.getLongitude();
+            } else  if (location1 != null) {
+                lat = location1.getLatitude();
+                lng = location1.getLongitude();
+            } else  if (location2 != null) {
+                lat = location2.getLatitude();
+                lng = location2.getLongitude();
+            } else {
+                Toast.makeText(this,"Cannot retrieved your current location.",Toast.LENGTH_SHORT).show();
+            }
+
+            if (lat != 0 && lng != 0) {
+                locationTV.setText("Your current location is"+ "\n" + "Latitude = " + String.valueOf(lat)
+                        + "\n" + "Longitude = " + String.valueOf(lng));
+
+                Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+                List<Address> addresses = null;
+
+                try {
+                    addresses = geocoder.getFromLocation(
+                            location.getLatitude(),
+                            location.getLongitude(),
+                            // In this sample, get just a single address.
+                            1);
+                    String address = addresses.get(0).getAddressLine(0);
+                    locationTV.setText(address);
+
+                } catch (IOException ioException) {
+                    // Catch network or other I/O problems.
+
+                } catch (IllegalArgumentException illegalArgumentException) {
+                    // Catch invalid latitude or longitude values.
+                }
+            }
+        }
+    }
+
+    protected void buildAlertMessageNoGps() {
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Turn on your GPS?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        dialog.cancel();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case LOCATION_REQUEST: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+    }
+
+
     private void signIn() {
-        progressDialog.setMessage("Signing in...");
-        progressDialog.show();
         Auth.GoogleSignInApi.signOut(mGoogleApiClient);
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
+
 
     private void signOut() {
         progressDialog.setMessage("Signing out...");
@@ -173,6 +315,8 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
+        progressDialog.setMessage("Signing in...");
+        progressDialog.show();
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
@@ -191,6 +335,7 @@ public class ProfileActivity extends AppCompatActivity {
                                     Toast.LENGTH_SHORT).show();
 //                            updateUI(null);
                         }
+                        progressDialog.dismiss();
 
                         // ...
                     }

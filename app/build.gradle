@@ -31,6 +31,7 @@ dependencies {
     compile 'com.github.tbouron.shakedetector:library:1.0.0@aar'
     compile 'com.google.firebase:firebase-auth:11.6.2'
     compile 'com.google.android.gms:play-services-auth:11.6.2'
+    compile 'com.google.android.gms:play-services-location:11.6.2'
 
 }
 

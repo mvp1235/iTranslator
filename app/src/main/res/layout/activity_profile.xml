@@ -225,6 +225,20 @@
         </LinearLayout>
 
 
+        <Button
+            android:id="@+id/getCurrentLocationBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/getCurrentLocation" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/locationTV"
+            android:text="TextView" />
+
+
+
     </LinearLayout>
 
 
