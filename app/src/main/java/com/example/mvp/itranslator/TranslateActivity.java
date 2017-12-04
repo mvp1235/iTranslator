@@ -3,7 +3,9 @@ package com.example.mvp.itranslator;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
@@ -39,6 +41,10 @@ import java.util.Locale;
 
 public class TranslateActivity extends AppCompatActivity implements TextToSpeech.OnInitListener{
 
+    private static final String INPUT_TEXT = "inputText";
+    private static final String TRANSLATED_TEXT = "translatedText";
+
+
     private static final int REQ_CODE_SPEECH_INPUT = 10000;
     private ArrayList<String> languages;
     private TextToSpeech tts;
@@ -58,12 +64,21 @@ public class TranslateActivity extends AppCompatActivity implements TextToSpeech
 
     private Translation translation;
 
+    private String MyPREFERENCES = "translatedActivity";
+
+    private SharedPreferences sharedpreferences;
+    private SharedPreferences.Editor editor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_translate);
 
         setUpLanguagesArray();
+
+        //State persistence
+        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        editor = sharedpreferences.edit();
 
         translation = new Translation();
 
@@ -207,6 +222,14 @@ public class TranslateActivity extends AppCompatActivity implements TextToSpeech
             });
         }
 
+        //Retrieve sharedPreferences data and fill it in appropriate fields
+
+        String textInputStr = sharedpreferences.getString(INPUT_TEXT, "");
+        String resultStr = sharedpreferences.getString(TRANSLATED_TEXT, "");
+        textInput.setText(textInputStr);
+        translation.setInputText(textInputStr);
+        resultTV.setText(resultStr);
+        translation.setTranslatedText(resultStr);
     }
 
     /**
@@ -280,6 +303,8 @@ public class TranslateActivity extends AppCompatActivity implements TextToSpeech
         translation.swapLanguages();
 
         clearInputs();
+        translation.setInputText("");
+        translation.setTranslatedText("");
     }
 
     private void clearInputs() {
@@ -290,6 +315,11 @@ public class TranslateActivity extends AppCompatActivity implements TextToSpeech
         //model update
         translation.setInputText("");
         translation.setTranslatedText("");
+
+        //State persistence
+        editor.putString(INPUT_TEXT, "");
+        editor.putString(TRANSLATED_TEXT, "");
+        editor.commit();
     }
 
     /**
@@ -323,6 +353,8 @@ public class TranslateActivity extends AppCompatActivity implements TextToSpeech
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     translation.setInputText(result.get(0));
                     textInput.setText(translation.getInputText());
+                    editor.putString(INPUT_TEXT, translation.getInputText());
+                    editor.commit();
                 }
                 break;
             }
@@ -369,6 +401,8 @@ public class TranslateActivity extends AppCompatActivity implements TextToSpeech
         String url = "https://translation.googleapis.com/language/translate/v2";
         translation.setInputText(textInput.getText().toString());
         String sourceString = translation.getInputText();
+        editor.putString(INPUT_TEXT, sourceString);
+        editor.commit();
 
         String targetLanguage = translation.getTargetLanguage();
         targetLanguage = HomeActivity.languageInitials.get(targetLanguage);
@@ -394,12 +428,18 @@ public class TranslateActivity extends AppCompatActivity implements TextToSpeech
                                 String translatedText = translations.getJSONObject(0).getString("translatedText");
                                 translation.setTranslatedText(translatedText);
                                 resultTV.setText(translatedText);
+
+                                editor.putString(TRANSLATED_TEXT, translatedText);
+                                editor.commit();
                             } else {
                                 //Display the reason why the translation is failing
                                 JSONObject error  = reader.getJSONObject("error");
                                 String errorMessage = error.getString("message");
                                 translation.setTranslatedText("");
                                 resultTV.setText(errorMessage);
+
+                                editor.putString(TRANSLATED_TEXT, errorMessage);
+                                editor.commit();
                             }
 
                         } catch (JSONException e) {
@@ -412,6 +452,8 @@ public class TranslateActivity extends AppCompatActivity implements TextToSpeech
             public void onErrorResponse(VolleyError error) {
                 translation.setTranslatedText("");
                 resultTV.setText("That didn't work!");
+                editor.putString(TRANSLATED_TEXT, "That didn't work!");
+                editor.commit();
             }
         });
         // Add the request to the RequestQueue.
