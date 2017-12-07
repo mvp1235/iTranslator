@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -34,6 +35,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -203,6 +212,7 @@ public class ConversationActivity extends AppCompatActivity implements TextToSpe
      * @return the value of the specified column name
      */
     public String getDatabaseColumnValue(String columnName) {
+
         Cursor c = getContentResolver().query(MyContentProvider.CONTENT_URI, null, "_id = ?", new String[] {"1"}, UserTable._ID);
 
         if (c.moveToFirst()) {
@@ -298,6 +308,8 @@ public class ConversationActivity extends AppCompatActivity implements TextToSpe
                     String output = result.get(0);
                     conversation.setFirstInput(output);
                     textInput1.setText(output);
+                    writeTextToFile(output, getApplicationContext());
+
                     translate(output, 1);
                 }
                 break;
@@ -311,12 +323,56 @@ public class ConversationActivity extends AppCompatActivity implements TextToSpe
                     String output = result.get(0);
                     conversation.setSecondInput(output);
                     textInput2.setText(output);
+                    writeTextToFile(output, getApplicationContext());
                     translate(output, 2);
                 }
                 break;
             }
 
         }
+    }
+
+    //Demonstrate the use of writing to file storage
+    private void writeTextToFile(String data, Context context) {
+        try {
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("input.txt", Context.MODE_PRIVATE));
+            outputStreamWriter.write(data);
+            outputStreamWriter.close();
+        }
+        catch (IOException e) {
+            Log.e("Exception", "File write failed: " + e.toString());
+        }
+    }
+
+    //Demonstrate the use of reading file storage
+    private String readFromFile(Context context) {
+
+        String ret = "";
+
+        try {
+            InputStream inputStream = context.openFileInput("input.txt");
+
+            if ( inputStream != null ) {
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String receiveString = "";
+                StringBuilder stringBuilder = new StringBuilder();
+
+                while ( (receiveString = bufferedReader.readLine()) != null ) {
+                    stringBuilder.append(receiveString);
+                }
+
+                inputStream.close();
+                ret = stringBuilder.toString();
+            }
+        }
+        catch (FileNotFoundException e) {
+            Log.e("login activity", "File not found: " + e.toString());
+        } catch (IOException e) {
+            Log.e("login activity", "Can not read file: " + e.toString());
+        }
+
+        return ret;
     }
 
     private void translate(String sourceString, final int personNum) {
@@ -336,6 +392,9 @@ public class ConversationActivity extends AppCompatActivity implements TextToSpe
             targetLanguage = conversation.getFirstLanguage();
 
         targetLanguage = HomeActivity.languageInitials.get(targetLanguage);
+
+        //Unnecessary here, just demonstrating the use of reading file storage
+        sourceString = readFromFile(getApplicationContext());
 
         try {
             sourceString = URLEncoder.encode(sourceString,"UTF-8");

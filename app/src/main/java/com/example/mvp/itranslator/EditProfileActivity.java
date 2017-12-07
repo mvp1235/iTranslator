@@ -20,7 +20,6 @@ public class EditProfileActivity extends AppCompatActivity {
     private Button saveBtn;
     private CheckBox shakeToSpeakCheckBox, longPressCopyCheckBox;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +44,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         userNameET.setText(name);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, languages);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, languages);
         userSourceLanguageSpinner.setAdapter(adapter);
         userTargetLanguageSpinner.setAdapter(adapter);
         userSpeechLanguageSpinner.setAdapter(adapter);

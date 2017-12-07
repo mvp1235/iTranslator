@@ -202,6 +202,7 @@ public class TranslateActivity extends AppCompatActivity implements TextToSpeech
 
         //Check if long press copy feature is enabled
         if (getDatabaseColumnValue(UserTable.LONG_PRESS_COPY).equalsIgnoreCase("1")) {
+
             resultTV.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
@@ -209,10 +210,12 @@ public class TranslateActivity extends AppCompatActivity implements TextToSpeech
                     return false;
                 }
             });
+
         }
 
         //check if shake to speak feature is enabled
         if (getDatabaseColumnValue(UserTable.SHAKE_TO_SPEAK).equalsIgnoreCase("1")) {
+
             ShakeDetector.create(this, new ShakeDetector.OnShakeListener() {
                 @Override
                 public void OnShake() {
@@ -220,10 +223,10 @@ public class TranslateActivity extends AppCompatActivity implements TextToSpeech
                         speakOutTranslatedText();
                 }
             });
+
         }
 
         //Retrieve sharedPreferences data and fill it in appropriate fields
-
         String textInputStr = sharedpreferences.getString(INPUT_TEXT, "");
         String resultStr = sharedpreferences.getString(TRANSLATED_TEXT, "");
         textInput.setText(textInputStr);
@@ -427,7 +430,8 @@ public class TranslateActivity extends AppCompatActivity implements TextToSpeech
                                 JSONArray translations = data.getJSONArray("translations");
                                 String translatedText = translations.getJSONObject(0).getString("translatedText");
                                 translation.setTranslatedText(translatedText);
-                                resultTV.setText(translatedText);
+
+                                resultTV.setText(translation.getTranslatedText());
 
                                 editor.putString(TRANSLATED_TEXT, translatedText);
                                 editor.commit();

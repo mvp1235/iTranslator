@@ -175,17 +175,20 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-        getCurrentLocationBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                    buildAlertMessageNoGps();
+        //Only enable the get current location feature if user is logged in through Google Sign-in
+        if (mAuth.getCurrentUser() != null) {
+            getCurrentLocationBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                        buildAlertMessageNoGps();
 
-                } else if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                    getLocation();
+                    } else if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                        getLocation();
+                    }
                 }
-            }
-        });
+            });
+        }
 
     }
 
@@ -204,9 +207,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         } else {
             Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-
             Location location1 = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
             Location location2 = locationManager.getLastKnownLocation(LocationManager. PASSIVE_PROVIDER);
 
             double lat = 0;
@@ -226,8 +227,8 @@ public class ProfileActivity extends AppCompatActivity {
             }
 
             if (lat != 0 && lng != 0) {
-                locationTV.setText("Your current location is"+ "\n" + "Latitude = " + String.valueOf(lat)
-                        + "\n" + "Longitude = " + String.valueOf(lng));
+                String locationText = "Your current location is"+ "\n" + "Latitude = " + String.valueOf(lat)
+                        + "\n" + "Longitude = " + String.valueOf(lng);
 
                 Geocoder geocoder = new Geocoder(this, Locale.getDefault());
                 List<Address> addresses = null;
@@ -239,7 +240,8 @@ public class ProfileActivity extends AppCompatActivity {
                             // In this sample, get just a single address.
                             1);
                     String address = addresses.get(0).getAddressLine(0);
-                    locationTV.setText(address);
+                    locationText += "\n" + "Nearest estimated address:\n";
+                    locationTV.setText(locationText + address);
 
                 } catch (IOException ioException) {
                     // Catch network or other I/O problems.
