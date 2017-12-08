@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -187,19 +188,24 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
         //Only enable the get current location feature if user is logged in through Google Sign-in
-        if (mAuth.getCurrentUser() != null) {
-            getCurrentLocationBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                        buildAlertMessageNoGps();
-
-                    } else if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+        getCurrentLocationBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    locationTV.setText("You need to enable GPS to use the current location feature.");
+                    locationTV.setTextColor(Color.RED);
+                    buildAlertMessageNoGps();
+                } else if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    if (mAuth.getCurrentUser() != null) {
                         getLocation();
+                    } else {
+                        locationTV.setText("You need to sign in for unlocking the current location feature.");
+                        locationTV.setTextColor(Color.RED);
                     }
                 }
-            });
-        }
+            }
+        });
+
 
     }
 
@@ -256,8 +262,9 @@ public class ProfileActivity extends AppCompatActivity {
                             // In this sample, get just a single address.
                             1);
                     String address = addresses.get(0).getAddressLine(0);
-                    locationText += "\n" + "Nearest estimated address:\n";
+                    locationText += "\n\n" + "Nearest estimated address:\n";
                     locationTV.setText(locationText + address);
+                    locationTV.setTextColor(Color.BLACK);
 
                 } catch (IOException ioException) {
                     // Catch network or other I/O problems.

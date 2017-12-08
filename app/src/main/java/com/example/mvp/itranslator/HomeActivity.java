@@ -7,7 +7,7 @@ import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageButton;
+import android.widget.Button;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +27,7 @@ public class HomeActivity extends AppCompatActivity {
     public static HashMap<String, String> languageInitialsReversed;
     public static ArrayList<String> languages;
 
-    private ImageButton translateBtn, conversationBtn, photoBtn, placesBtn;
+    private Button translateBtn, conversationBtn, photoBtn, profileBtn;
 
     private SharedPreferences sharedPref;
     private SharedPreferences.Editor editor;
@@ -57,7 +57,7 @@ public class HomeActivity extends AppCompatActivity {
         translateBtn = findViewById(R.id.translateBtn);
         conversationBtn = findViewById(R.id.conversationBtn);
         photoBtn = findViewById(R.id.photosBtn);
-        placesBtn = findViewById(R.id.placesBtn);
+        profileBtn = findViewById(R.id.profileBtn);
 
         setUpClickListeners();
     }
@@ -88,7 +88,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        placesBtn.setOnClickListener(new View.OnClickListener() {
+        profileBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 enterProfileMode();

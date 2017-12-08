@@ -23,22 +23,26 @@
         android:orientation="horizontal">
 
 
-        <ImageButton
+        <Button
             android:id="@+id/translateBtn"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@android:color/white"
-            app:srcCompat="@android:drawable/ic_menu_sort_alphabetically" />
+            android:drawableTop="@mipmap/text_icon"
+            android:textColor="?android:attr/textColorLink"
+            android:text="Translation" />
 
 
-        <ImageButton
+        <Button
             android:id="@+id/conversationBtn"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@android:color/white"
-            app:srcCompat="@android:drawable/ic_btn_speak_now" />
+            android:drawableTop="@mipmap/mic_icon"
+            android:textColor="?android:attr/textColorLink"
+            android:text="Conversation" />
 
     </LinearLayout>
 
@@ -48,21 +52,25 @@
         android:layout_weight="1"
         android:orientation="horizontal">
 
-        <ImageButton
+        <Button
             android:id="@+id/photosBtn"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@android:color/white"
-            app:srcCompat="@android:drawable/ic_menu_camera" />
+            android:drawableTop="@mipmap/camera_icon"
+            android:textColor="?android:attr/textColorLink"
+            android:text="Photo Translation" />
 
-        <ImageButton
-            android:id="@+id/placesBtn"
+        <Button
+            android:id="@+id/profileBtn"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@android:color/white"
-            app:srcCompat="?android:attr/actionModePasteDrawable" />
+            android:drawableTop="@mipmap/profile_icon"
+            android:text="Profile"
+            android:textColor="?android:attr/textColorLink" />
 
     </LinearLayout>
 
