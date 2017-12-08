@@ -103,6 +103,7 @@ public class ConversationActivity extends AppCompatActivity implements TextToSpe
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, languages);
         targetLanguage1.setAdapter(adapter);
 
+        //Set listener for spinner
         targetLanguage1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -153,6 +154,7 @@ public class ConversationActivity extends AppCompatActivity implements TextToSpe
             }
         });
 
+        //Set listener for spinner
         targetLanguage2.setSelection(languages.indexOf(targetLang2));
         conversation.setSecondLanguage(targetLang2);
 
@@ -167,6 +169,7 @@ public class ConversationActivity extends AppCompatActivity implements TextToSpe
 
         translatedText = findViewById(R.id.translatedText);
 
+        //Check if LONG_PRESS_COPY mode is enabled
         if (getDatabaseColumnValue(UserTable.LONG_PRESS_COPY).equalsIgnoreCase("1")) {
             translatedText.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
@@ -332,7 +335,11 @@ public class ConversationActivity extends AppCompatActivity implements TextToSpe
         }
     }
 
-    //Demonstrate the use of writing to file storage
+    /**
+     * Demonstrate the use of writing to file storage
+     * @param data the text to be written to file
+     * @param context the application context
+     */
     private void writeTextToFile(String data, Context context) {
         try {
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("input.txt", Context.MODE_PRIVATE));
@@ -344,7 +351,12 @@ public class ConversationActivity extends AppCompatActivity implements TextToSpe
         }
     }
 
-    //Demonstrate the use of reading file storage
+
+    /**
+     * Demonstrate the use of reading file storage
+     * @param context the application context
+     * @return the string retrieved from reading the file "input.txt"
+     */
     private String readFromFile(Context context) {
 
         String ret = "";
@@ -375,6 +387,11 @@ public class ConversationActivity extends AppCompatActivity implements TextToSpe
         return ret;
     }
 
+    /**
+     * Translate a string into a specified language based on who was speaking
+     * @param sourceString the text retrieved from voice input
+     * @param personNum the index which indicate who the voice input came from, 1 for first person, 2 for second person
+     */
     private void translate(String sourceString, final int personNum) {
         //Update UI
         if (personNum == 1)
@@ -462,7 +479,7 @@ public class ConversationActivity extends AppCompatActivity implements TextToSpe
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode){
-            case REQUEST_RECORD_AUDIO_PERMISSION:
+            case REQUEST_RECORD_AUDIO_PERMISSION:   //grant permission for recording audio
                 permissionToRecordAccepted  = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                 break;
         }

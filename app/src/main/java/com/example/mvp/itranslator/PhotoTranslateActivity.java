@@ -45,6 +45,9 @@ import java.util.Locale;
 import static com.example.mvp.itranslator.HomeActivity.languageInitialsReversed;
 import static com.example.mvp.itranslator.HomeActivity.languages;
 
+/**
+ * Photo Translation activity, where users select an image from gallery or take a photo, and the text inside that photo will be translated and displayed
+ */
 public class PhotoTranslateActivity extends AppCompatActivity implements TextToSpeech.OnInitListener {
 
     private static final int REQUEST_IMAGE_CAPTURE = 9000;
@@ -78,6 +81,7 @@ public class PhotoTranslateActivity extends AppCompatActivity implements TextToS
 
         tts = new TextToSpeech(this, this);
 
+        //Referencing to the UI elements
         photoTV = findViewById(R.id.inputPhoto);
         getPhotoBtn = findViewById(R.id.getPhotoBtn);
         translateBtn = findViewById(R.id.photoTextTranslateBtn);
@@ -110,10 +114,11 @@ public class PhotoTranslateActivity extends AppCompatActivity implements TextToS
         });
 
 
-
+        //Set up adapter for the spinners
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, languages);
         targetLanguageSpinner.setAdapter(adapter);
 
+        //Update the PhotoTranslation model when spinner changes value
         targetLanguageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -130,6 +135,7 @@ public class PhotoTranslateActivity extends AppCompatActivity implements TextToS
         String targetLang = getDatabaseColumnValue(UserTable.TARGET_LANG);
         targetLanguageSpinner.setSelection(languages.indexOf(targetLang));
 
+        //If LONG_PRESS_COPY mode is enabled, then set long click listener
         if (getDatabaseColumnValue(UserTable.LONG_PRESS_COPY).equalsIgnoreCase("1")) {
             resultTV.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
@@ -148,8 +154,8 @@ public class PhotoTranslateActivity extends AppCompatActivity implements TextToS
             });
         }
 
-        //Setting listener for shaking motion sensor
-        if (getDatabaseColumnValue(UserTable.LONG_PRESS_COPY).equalsIgnoreCase("1")) {
+        //Setting listener for shaking motion sensor if SHAKE_TO_SPEAK mode is enabled
+        if (getDatabaseColumnValue(UserTable.SHAKE_TO_SPEAK).equalsIgnoreCase("1")) {
             ShakeDetector.create(this, new ShakeDetector.OnShakeListener() {
                 @Override
                 public void OnShake() {
@@ -161,18 +167,28 @@ public class PhotoTranslateActivity extends AppCompatActivity implements TextToS
 
     }
 
+    /**
+     * On resume method
+     */
     @Override
     protected void onResume() {
         super.onResume();
         ShakeDetector.start();
     }
 
+    /**
+     * On stop method
+     */
     @Override
     protected void onStop() {
         super.onStop();
         ShakeDetector.stop();
     }
 
+    /**
+     * Copy the text to clipboard manager
+     * @param text the text to be copied
+     */
     public void copy(String text) {
         clipData = ClipData.newPlainText("text", text);
         clipboardManager.setPrimaryClip(clipData);
@@ -216,6 +232,9 @@ public class PhotoTranslateActivity extends AppCompatActivity implements TextToS
         return null;
     }
 
+    /**
+     * On Destroy method
+     */
     @Override
     public void onDestroy() {
         // Don't forget to shutdown tts!
@@ -223,10 +242,14 @@ public class PhotoTranslateActivity extends AppCompatActivity implements TextToS
             tts.stop();
             tts.shutdown();
         }
+        //Destroy shake detector once activity is destroyed
         ShakeDetector.destroy();
         super.onDestroy();
     }
 
+    /**
+     * Start Text-To-Speech for the translated text
+     */
     private void speakOutTranslatedText() {
         String text = photoTranslation.getTranslatedResult();
         String language = photoTranslation.getTargetLanguage();
@@ -243,13 +266,13 @@ public class PhotoTranslateActivity extends AppCompatActivity implements TextToS
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {  //receive photo from camera snap
             Bundle extras = data.getExtras();
             photoBitmap = (Bitmap) extras.get("data");
             photoTV.setImageBitmap(photoBitmap);
             photoActionDialog.dismiss();
 
-        } else if (requestCode == REQUEST_GALLERY_PHOTO && resultCode == RESULT_OK) {
+        } else if (requestCode == REQUEST_GALLERY_PHOTO && resultCode == RESULT_OK) {   //receive photo from gallery
             Uri imageUri = data.getData();
             try {
                 photoBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
@@ -263,11 +286,15 @@ public class PhotoTranslateActivity extends AppCompatActivity implements TextToS
         }
     }
 
+    /**
+     * Encode the chosen photo and send it to Google Cloud Vision for text recognition and display the result
+     */
     private void translateTextFromPhoto() {
         RequestQueue queue = Volley.newRequestQueue(this);
         JSONObject requestJSON = null;
         String url = "https://vision.googleapis.com/v1/images:annotate?key=" + HomeActivity.CLOUD_API_KEY;
 
+        //Set up JSON request
         try {
             requestJSON = new JSONObject("{\n" +
                     "  \"requests\": [\n" +
@@ -329,6 +356,10 @@ public class PhotoTranslateActivity extends AppCompatActivity implements TextToS
         queue.add(jsonObjectRequest);
     }
 
+    /**
+     * Translate a text to a specified language
+     * @param sourceString the text to be translated
+     */
     private void translate(String sourceString) {
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = "https://translation.googleapis.com/language/translate/v2";
@@ -383,6 +414,9 @@ public class PhotoTranslateActivity extends AppCompatActivity implements TextToS
         queue.add(stringRequest);
     }
 
+    /**
+     * Show choices for camera photo capture or gallery
+     */
     private void showPhotoActionDialog() {
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(PhotoTranslateActivity.this);
         View mView = getLayoutInflater().inflate(R.layout.dialog_pick_photos, null);
@@ -409,6 +443,9 @@ public class PhotoTranslateActivity extends AppCompatActivity implements TextToS
         photoActionDialog.show();
     }
 
+    /**
+     * Start camera for photo capture
+     */
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
@@ -416,6 +453,11 @@ public class PhotoTranslateActivity extends AppCompatActivity implements TextToS
         }
     }
 
+    /**
+     * Encode bitmap to be sent to Google Cloud Vision for text recognition
+     * @param bitmap
+     * @return
+     */
     private String encodeBitmap(Bitmap bitmap) {
         if (bitmap == null)
             return null;

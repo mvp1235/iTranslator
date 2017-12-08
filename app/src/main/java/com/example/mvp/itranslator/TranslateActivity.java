@@ -52,6 +52,7 @@ public class TranslateActivity extends AppCompatActivity implements TextToSpeech
     private TextView resultTV, errorTV;
     private EditText textInput;
     private Button translateBtn, clearBtn;
+
     private ImageButton speakTranslationBtn;
     private ImageButton speakBtn;
     private Spinner speechLanguageSpinner;
@@ -175,6 +176,7 @@ public class TranslateActivity extends AppCompatActivity implements TextToSpeech
                 clearInputs();
             }
         });
+
         speakBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -400,6 +402,7 @@ public class TranslateActivity extends AppCompatActivity implements TextToSpeech
      * Send input text to Google Cloud Translation service and retrieve the translated text
      */
     private void translate() {
+
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = "https://translation.googleapis.com/language/translate/v2";
         translation.setInputText(textInput.getText().toString());

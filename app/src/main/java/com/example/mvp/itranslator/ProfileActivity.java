@@ -42,6 +42,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * Profile Activity, where user can see their personal information and settings
+ */
 public class ProfileActivity extends AppCompatActivity {
 
     private static final String TAG = "GOOGLE AUTH";
@@ -65,9 +68,9 @@ public class ProfileActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
-    private ProgressDialog progressDialog;
+    private ProgressDialog progressDialog;  //display current progress dialog
 
-    private LocationManager locationManager;
+    private LocationManager locationManager;    //used to get current location
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +84,8 @@ public class ProfileActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(this);
 
         mAuth = FirebaseAuth.getInstance();
+
+        //Listener for authentication changes
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -96,6 +101,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
         };
 
+        //Referencing to UI elements
         userNameTV = findViewById(R.id.userName);
         userIdTV = findViewById(R.id.userID);
         userSourceLanguageTV = findViewById(R.id.userSourceLanguage);
@@ -107,9 +113,9 @@ public class ProfileActivity extends AppCompatActivity {
         logOutBtn = findViewById(R.id.logOutBtn);
         getCurrentLocationBtn = findViewById(R.id.getCurrentLocationBtn);
         locationTV = findViewById(R.id.locationTV);
-
         editProfileBtn = findViewById(R.id.editProfileBtn);
 
+        //Retrieve all profile information from database
         String id = getDatabaseColumnValue(UserTable._ID);
         String name = getDatabaseColumnValue(UserTable.NAME);
         String sourceLang = getDatabaseColumnValue(UserTable.SOURCE_LANG);
@@ -118,6 +124,7 @@ public class ProfileActivity extends AppCompatActivity {
         String shakeToSpeak = getDatabaseColumnValue(UserTable.SHAKE_TO_SPEAK);
         String longPressCopy = getDatabaseColumnValue(UserTable.LONG_PRESS_COPY);
 
+        //Fill in all fields
         if (id != null)
             userIdTV.setText(id);
         if (name != null)
@@ -128,11 +135,14 @@ public class ProfileActivity extends AppCompatActivity {
             userTargetLanguageTV.setText(targetLang);
         if (speechLang != null)
             userSpeechLanguageTV.setText(speechLang);
+
+        //if shake to speak feature is enable
         if (shakeToSpeak != null && shakeToSpeak.equalsIgnoreCase("1"))
             userShakeToSpeakTV.setText("Enabled");
         else
             userShakeToSpeakTV.setText("Disabled");
 
+        //if long press copy is enabled
         if (longPressCopy != null && longPressCopy.equalsIgnoreCase("1"))
             userLongPressCopyTV.setText("Enabled");
         else
@@ -151,6 +161,7 @@ public class ProfileActivity extends AppCompatActivity {
                 .requestEmail()
                 .build();
 
+        //build the google sign in activity
         mGoogleApiClient = new GoogleApiClient.Builder(getApplicationContext())
                 .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
                     @Override
@@ -198,6 +209,9 @@ public class ProfileActivity extends AppCompatActivity {
         mAuth.addAuthStateListener(mAuthListener);
     }
 
+    /**
+     * Obtain current location, and call geo-location to retrieve the nearest estimate address
+     */
     private void getLocation() {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission
@@ -206,6 +220,7 @@ public class ProfileActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST);
 
         } else {
+            //Three different modes are used, in case one doesn't work or is not supported, the rest can be used
             Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
             Location location1 = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             Location location2 = locationManager.getLastKnownLocation(LocationManager. PASSIVE_PROVIDER);
@@ -230,6 +245,7 @@ public class ProfileActivity extends AppCompatActivity {
                 String locationText = "Your current location is"+ "\n" + "Latitude = " + String.valueOf(lat)
                         + "\n" + "Longitude = " + String.valueOf(lng);
 
+                //Retrieve physical address of a LatLng
                 Geocoder geocoder = new Geocoder(this, Locale.getDefault());
                 List<Address> addresses = null;
 
@@ -253,6 +269,9 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Show message to user if location is turned off, and lead them to the location setting on device
+     */
     protected void buildAlertMessageNoGps() {
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -277,7 +296,7 @@ public class ProfileActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
         switch (requestCode) {
-            case LOCATION_REQUEST: {
+            case LOCATION_REQUEST: {    //location request is successful
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -296,19 +315,28 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Starts the Google sign in activity
+     */
     private void signIn() {
         Auth.GoogleSignInApi.signOut(mGoogleApiClient);
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
-
+    /**
+     * Sign users out
+     */
     private void signOut() {
         progressDialog.setMessage("Signing out...");
         progressDialog.show();
         mAuth.signOut();
     }
 
+    /**
+     * Authenticate provided account to Google
+     * @param acct account to be authenticate
+     */
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
         progressDialog.setMessage("Signing in...");
@@ -338,7 +366,9 @@ public class ProfileActivity extends AppCompatActivity {
                 });
     }
 
-
+    /**
+     * Obtain data from the fields and update profile on database
+     */
     private void editProfile() {
         Intent intent = new Intent(ProfileActivity.this, EditProfileActivity.class);
         intent.putExtra(NAME, userNameTV.getText().toString());
@@ -355,6 +385,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //If editing activity succesfully returns, take the returned intent data and update current fields
         if (requestCode == EDIT_PROFILE_REQUEST_CODE && resultCode == RESULT_OK) {
             userNameTV.setText(data.getStringExtra(UserTable.NAME));
             userSourceLanguageTV.setText(data.getStringExtra(UserTable.SOURCE_LANG));

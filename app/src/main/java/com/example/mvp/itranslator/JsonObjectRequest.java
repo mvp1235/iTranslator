@@ -14,8 +14,8 @@ import java.io.UnsupportedEncodingException;
 
 /**
  * Created by MVP on 11/17/2017.
+ * To be used to help include JSON body for RESTful API
  */
-
 public class JsonObjectRequest extends JsonRequest<JSONObject> {
 
     /**

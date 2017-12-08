@@ -26,6 +26,9 @@ import java.util.Scanner;
 
 import static android.provider.CalendarContract.CalendarCache.URI;
 
+/**
+ * Wrapper for the SQlite database
+ */
 public class MyContentProvider extends ContentProvider {
 
     private DBHelper database;
@@ -183,7 +186,10 @@ public class MyContentProvider extends ContentProvider {
         return rowsUpdated;
     }
 
-
+    /**
+     * Check to ensure all columns are available
+     * @param projection the columns
+     */
     private void checkColumns(String[] projection) {
         String[] available = {UserTable._ID, UserTable.NAME,
                 UserTable.SOURCE_LANG, UserTable.TARGET_LANG,

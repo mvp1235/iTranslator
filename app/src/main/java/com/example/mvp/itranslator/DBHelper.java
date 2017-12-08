@@ -8,6 +8,9 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+/**
+ * Helper class for SQLite database
+ */
 public class DBHelper extends SQLiteOpenHelper {
 
     static final String DATABASE_NAME = "myprovider";

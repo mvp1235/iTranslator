@@ -7,6 +7,9 @@ package com.example.mvp.itranslator;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+/**
+ * Define User table for SQLite database
+ */
 public class UserTable {
     static final String _ID = "_id";
     static final String NAME = "name";

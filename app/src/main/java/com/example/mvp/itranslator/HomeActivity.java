@@ -12,9 +12,12 @@ import android.widget.ImageButton;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * The starting home activity of the application. Contains 4 Image Buttons which take users to different translation modes and profile screen
+ */
 public class HomeActivity extends AppCompatActivity {
 
-    //This key will not be available on app launched. User will need to provide his/her own API key to use the app
+    //This key will not be available on app launched. User will need to provide his/her own API key to use the app, or pay to unlock
     //The app will show users instructions on how to obtain this API key
     public static final String CLOUD_API_KEY = "AIzaSyBtnT5Ln0j-t6q2ju98N7wM_LdbLd9yBxo";
 
@@ -34,6 +37,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        //Set up language arrays
         setUpLanguagesArray();
         setUpLanguageInitials();
         setUpLanguageInitialsReversed();
@@ -124,6 +128,9 @@ public class HomeActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    /**
+     * Set up languages HashMap to be used for Google Cloud Translation
+     */
     private void setUpLanguagesArray() {
         languages = new ArrayList<>();
         languages.add("Afrikaans");
@@ -232,6 +239,9 @@ public class HomeActivity extends AppCompatActivity {
         languages.add("Zulu");
     }
 
+    /**
+     * Set up languages HashMap to be used for Android Text-to-Speech and Speech-To-Text
+     */
     private void setUpLanguageInitials() {
         languageInitials = new HashMap<>();
         languageInitials.put("Afrikaans", "af");
@@ -341,6 +351,9 @@ public class HomeActivity extends AppCompatActivity {
         languageInitials.put("Zulu", "zu");
     }
 
+    /**
+     * Set up language HashMap in reversed key-value
+     */
     private void setUpLanguageInitialsReversed() {
         languageInitialsReversed = new HashMap<>();
         languageInitialsReversed.put("af", "Afrikaans");

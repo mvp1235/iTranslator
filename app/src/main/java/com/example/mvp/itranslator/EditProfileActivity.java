@@ -13,6 +13,9 @@ import android.widget.Spinner;
 
 import static com.example.mvp.itranslator.HomeActivity.languages;
 
+/**
+ * The activity where users can edit profile information such as name, languages, and enable/disable SHAKE_TO_SPEAK and LONG_PRESS_COPY mode
+ */
 public class EditProfileActivity extends AppCompatActivity {
 
     private EditText userNameET;
@@ -25,6 +28,7 @@ public class EditProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
+        //Referencing UI elements
         userNameET = findViewById(R.id.editUserName);
         saveBtn = findViewById(R.id.saveProfileEditBtn);
         userSourceLanguageSpinner = findViewById(R.id.sourceLanguageSpinner);
@@ -33,6 +37,7 @@ public class EditProfileActivity extends AppCompatActivity {
         shakeToSpeakCheckBox = findViewById(R.id.shakeToSpeakCheckBox);
         longPressCopyCheckBox = findViewById(R.id.longPressCopyCheckBox);
 
+        //Get data from intent
         Intent receivedIntent = getIntent();
 
         String name = receivedIntent.getStringExtra(ProfileActivity.NAME);
@@ -44,6 +49,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         userNameET.setText(name);
 
+        //Set up adapter for the spinners
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, languages);
         userSourceLanguageSpinner.setAdapter(adapter);
         userTargetLanguageSpinner.setAdapter(adapter);
@@ -80,14 +86,18 @@ public class EditProfileActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Takes input from the UI fields and update the user data on the database
+     */
     private void saveProfile() {
+        //Used to update the previous activity upon returning
         Intent intent = new Intent();
         intent.putExtra(UserTable.NAME, userNameET.getText().toString());
         intent.putExtra(UserTable.TARGET_LANG, userTargetLanguageSpinner.getSelectedItem().toString());
         intent.putExtra(UserTable.SOURCE_LANG, userSourceLanguageSpinner.getSelectedItem().toString());
         intent.putExtra(UserTable.SPEECH_LANG, userSpeechLanguageSpinner.getSelectedItem().toString());
 
-
+        //Setting values for the database update
         ContentValues contentValues = new ContentValues();
         contentValues.put(UserTable.NAME, userNameET.getText().toString());
         contentValues.put(UserTable.TARGET_LANG, userTargetLanguageSpinner.getSelectedItem().toString());
