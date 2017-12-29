@@ -33,4 +33,6 @@
     <string name="save">Save</string>
     <string name="edit">Edit</string>
     <string name="getCurrentLocation">Get Current Location</string>
+    <string name="photoTextTranslation">Photo\'s Text Translation</string>
+    <string name="textTranslation">Text Translation</string>
 </resources>

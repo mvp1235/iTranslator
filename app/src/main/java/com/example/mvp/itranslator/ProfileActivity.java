@@ -61,46 +61,12 @@ public class ProfileActivity extends AppCompatActivity {
     public static String LONG_PRESS_COPY = "longPressCopy";
 
     private TextView userNameTV, userIdTV, userSourceLanguageTV, userTargetLanguageTV, userSpeechLanguageTV, userShakeToSpeakTV, userLongPressCopyTV;
-    private Button editProfileBtn, logOutBtn, getCurrentLocationBtn;
-    private SignInButton googleSignInBtn;
-    private TextView locationTV;
-
-    private GoogleApiClient mGoogleApiClient;
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
-
-    private ProgressDialog progressDialog;  //display current progress dialog
-
-    private LocationManager locationManager;    //used to get current location
+    private Button editProfileBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-
-        ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST);
-
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        progressDialog = new ProgressDialog(this);
-
-        mAuth = FirebaseAuth.getInstance();
-
-        //Listener for authentication changes
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                if (firebaseAuth.getCurrentUser() != null) {    //user is signed in
-                    googleSignInBtn.setVisibility(View.GONE);
-                    logOutBtn.setVisibility(View.VISIBLE);
-                    progressDialog.dismiss();
-                } else {    //user is logged out
-                    googleSignInBtn.setVisibility(View.VISIBLE);
-                    logOutBtn.setVisibility(View.GONE);
-                    progressDialog.dismiss();
-                }
-            }
-        };
 
         //Referencing to UI elements
         userNameTV = findViewById(R.id.userName);
@@ -110,10 +76,6 @@ public class ProfileActivity extends AppCompatActivity {
         userSpeechLanguageTV = findViewById(R.id.userSpeechLanguage);
         userShakeToSpeakTV = findViewById(R.id.userShakeToSpeak);
         userLongPressCopyTV = findViewById(R.id.userLongPressCopy);
-        googleSignInBtn = findViewById(R.id.googleSignInBtn);
-        logOutBtn = findViewById(R.id.logOutBtn);
-        getCurrentLocationBtn = findViewById(R.id.getCurrentLocationBtn);
-        locationTV = findViewById(R.id.locationTV);
         editProfileBtn = findViewById(R.id.editProfileBtn);
 
         //Retrieve all profile information from database
@@ -155,222 +117,6 @@ public class ProfileActivity extends AppCompatActivity {
                 editProfile();
             }
         });
-
-        // Configure Google Sign In
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-
-        //build the google sign in activity
-        mGoogleApiClient = new GoogleApiClient.Builder(getApplicationContext())
-                .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
-                    @Override
-                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-                        Toast.makeText(getApplicationContext(), "Connection failed... PLease try again later.", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
-
-        googleSignInBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                signIn();
-            }
-        });
-
-        logOutBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                signOut();
-            }
-        });
-
-        //Only enable the get current location feature if user is logged in through Google Sign-in
-        getCurrentLocationBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                    locationTV.setText("You need to enable GPS to use the current location feature.");
-                    locationTV.setTextColor(Color.RED);
-                    buildAlertMessageNoGps();
-                } else if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                    if (mAuth.getCurrentUser() != null) {
-                        getLocation();
-                    } else {
-                        locationTV.setText("You need to sign in for unlocking the current location feature.");
-                        locationTV.setTextColor(Color.RED);
-                    }
-                }
-            }
-        });
-
-
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
-    }
-
-    /**
-     * Obtain current location, and call geo-location to retrieve the nearest estimate address
-     */
-    private void getLocation() {
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission
-                (this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST);
-
-        } else {
-            //Three different modes are used, in case one doesn't work or is not supported, the rest can be used
-            Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            Location location1 = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            Location location2 = locationManager.getLastKnownLocation(LocationManager. PASSIVE_PROVIDER);
-
-            double lat = 0;
-            double lng = 0;
-
-            if (location != null) {
-                lat = location.getLatitude();
-                lng = location.getLongitude();
-            } else  if (location1 != null) {
-                lat = location1.getLatitude();
-                lng = location1.getLongitude();
-            } else  if (location2 != null) {
-                lat = location2.getLatitude();
-                lng = location2.getLongitude();
-            } else {
-                Toast.makeText(this,"Cannot retrieved your current location.",Toast.LENGTH_SHORT).show();
-            }
-
-            if (lat != 0 && lng != 0) {
-                String locationText = "Your current location is"+ "\n" + "Latitude = " + String.valueOf(lat)
-                        + "\n" + "Longitude = " + String.valueOf(lng);
-
-                //Retrieve physical address of a LatLng
-                Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-                List<Address> addresses = null;
-
-                try {
-                    addresses = geocoder.getFromLocation(
-                            location.getLatitude(),
-                            location.getLongitude(),
-                            // In this sample, get just a single address.
-                            1);
-                    String address = addresses.get(0).getAddressLine(0);
-                    locationText += "\n\n" + "Nearest estimated address:\n";
-                    locationTV.setText(locationText + address);
-                    locationTV.setTextColor(Color.BLACK);
-
-                } catch (IOException ioException) {
-                    // Catch network or other I/O problems.
-
-                } catch (IllegalArgumentException illegalArgumentException) {
-                    // Catch invalid latitude or longitude values.
-                }
-            }
-        }
-    }
-
-    /**
-     * Show message to user if location is turned off, and lead them to the location setting on device
-     */
-    protected void buildAlertMessageNoGps() {
-
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Turn on your GPS?")
-                .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, final int id) {
-                        startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, final int id) {
-                        dialog.cancel();
-                    }
-                });
-        final AlertDialog alert = builder.create();
-        alert.show();
-    }
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case LOCATION_REQUEST: {    //location request is successful
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                } else {
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                }
-                return;
-            }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
-        }
-    }
-
-
-    /**
-     * Starts the Google sign in activity
-     */
-    private void signIn() {
-        Auth.GoogleSignInApi.signOut(mGoogleApiClient);
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-        startActivityForResult(signInIntent, RC_SIGN_IN);
-    }
-
-    /**
-     * Sign users out
-     */
-    private void signOut() {
-        progressDialog.setMessage("Signing out...");
-        progressDialog.show();
-        mAuth.signOut();
-    }
-
-    /**
-     * Authenticate provided account to Google
-     * @param acct account to be authenticate
-     */
-    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
-        progressDialog.setMessage("Signing in...");
-        progressDialog.show();
-
-        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithCredential:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-//                            updateUI(user);
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Toast.makeText(ProfileActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-//                            updateUI(null);
-                        }
-                        progressDialog.dismiss();
-
-                        // ...
-                    }
-                });
     }
 
     /**
@@ -408,20 +154,6 @@ public class ProfileActivity extends AppCompatActivity {
                 userLongPressCopyTV.setText("Enabled");
             else
                 userLongPressCopyTV.setText("Disabled");
-        }
-
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            try {
-                // Google Sign In was successful, authenticate with Firebase
-                GoogleSignInAccount account = task.getResult(ApiException.class);
-                firebaseAuthWithGoogle(account);
-            } catch (ApiException e) {
-                // Google Sign In failed, update UI appropriately
-                Log.w(TAG, "Google sign in failed", e);
-                // ...
-            }
         }
     }
 

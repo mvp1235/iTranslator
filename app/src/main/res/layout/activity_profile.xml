@@ -21,53 +21,18 @@
             android:layout_marginBottom="10dp"
             android:textStyle="bold" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/editProfileBtn"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:orientation="horizontal">
-
-            <com.google.android.gms.common.SignInButton
-                android:layout_width="0dp"
-                android:layout_weight="3"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_marginEnd="5dp"
-                android:id="@+id/googleSignInBtn">
-            </com.google.android.gms.common.SignInButton>
-
-            <Button
-                android:id="@+id/logOutBtn"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:background="?attr/colorError"
-                android:text="@string/logOut"
-                android:layout_marginStart="5dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_marginEnd="5dp"
-                android:textColor="@android:color/white" />
-
-            <Button
-                android:id="@+id/editProfileBtn"
-                android:layout_width="0dp"
-                android:layout_weight="2"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:background="@android:color/holo_orange_light"
-                android:text="@string/edit"
-                android:layout_marginStart="5dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_marginEnd="5dp"
-                android:textColor="@android:color/white" />
-
-        </LinearLayout>
-
-
+            android:layout_gravity="end"
+            android:background="@android:color/holo_orange_light"
+            android:text="@string/edit"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginEnd="5dp"
+            android:textColor="@android:color/white" />
 
         <TextView
             android:id="@+id/userName"
@@ -223,20 +188,6 @@
                 android:paddingHorizontal="10dp" />
 
         </LinearLayout>
-
-
-        <Button
-            android:id="@+id/getCurrentLocationBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="@string/getCurrentLocation" />
-
-        <TextView
-            android:id="@+id/locationTV"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
 
 
     </LinearLayout>

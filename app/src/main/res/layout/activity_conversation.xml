@@ -19,7 +19,7 @@
             android:text="@string/conversationTitle"
             android:textAlignment="center"
             android:textColor="@color/colorAccent"
-            android:textSize="30sp"
+            android:textSize="24sp"
             android:textStyle="bold" />
 
         <TextView
