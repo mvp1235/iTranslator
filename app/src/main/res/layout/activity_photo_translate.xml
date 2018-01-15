@@ -10,7 +10,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <TextView
@@ -33,6 +33,7 @@
                 android:layout_width="0dp"
                 android:layout_height="200dp"
                 android:layout_weight="3"
+                android:contentDescription="@string/placeholder_for_the_photo_to_be_processed"
                 app:srcCompat="@android:drawable/ic_menu_help" />
 
             <ImageButton
@@ -43,7 +44,8 @@
                 android:background="@android:color/transparent"
                 android:scaleType="fitCenter"
                 android:layout_gravity="center_vertical"
-                app:srcCompat="@android:drawable/ic_input_add" />
+                app:srcCompat="@android:drawable/ic_input_add"
+                android:contentDescription="@string/select_a_photo_for_text_capture_and_translation" />
 
         </LinearLayout>
 
@@ -126,8 +128,7 @@
                 android:layout_weight="3"
                 android:gravity="center_vertical"
                 android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:text="source text" />
+                android:paddingRight="5dp"/>
 
         </LinearLayout>
 
@@ -152,8 +153,7 @@
                 android:layout_weight="3"
                 android:gravity="center_vertical"
                 android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:text="translation from photo's text" />
+                android:paddingRight="5dp" />
 
         </LinearLayout>
 

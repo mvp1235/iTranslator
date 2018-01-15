@@ -35,4 +35,10 @@
     <string name="getCurrentLocation">Get Current Location</string>
     <string name="photoTextTranslation">Photo\'s Text Translation</string>
     <string name="textTranslation">Text Translation</string>
+    <string name="translation">Translation</string>
+    <string name="conversation">Conversation</string>
+    <string name="photo">Photo</string>
+    <string name="profile">Profile</string>
+    <string name="select_a_photo_for_text_capture_and_translation">Select a photo for text capture and translation</string>
+    <string name="placeholder_for_the_photo_to_be_processed">Placeholder for the photo to be processed</string>
 </resources>

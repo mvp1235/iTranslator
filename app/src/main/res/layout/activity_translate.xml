@@ -77,15 +77,21 @@
             android:focusableInTouchMode="true"
             android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/textInput"
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
-                android:layout_marginBottom="20dp"
-                android:ems="10"
-                android:hint="@string/translationScreenHint"
-                android:inputType="textMultiLine" />
+                android:id="@+id/textinput_layout">
+
+                <android.support.v7.widget.AppCompatEditText
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:id="@+id/textInput"
+                    android:hint="Text Input"
+                    android:ems="10"
+                    android:inputType="textMultiLine"/>
+
+            </android.support.design.widget.TextInputLayout>
 
             <ImageButton
                 android:id="@+id/translateSpeakBtn"

@@ -31,7 +31,7 @@
             android:background="@android:color/white"
             android:drawableTop="@mipmap/text_icon"
             android:textColor="?android:attr/textColorLink"
-            android:text="Translation" />
+            android:text="@string/translation" />
 
 
         <Button
@@ -42,7 +42,7 @@
             android:background="@android:color/white"
             android:drawableTop="@mipmap/mic_icon"
             android:textColor="?android:attr/textColorLink"
-            android:text="Conversation" />
+            android:text="@string/conversation" />
 
     </LinearLayout>
 
@@ -60,7 +60,7 @@
             android:background="@android:color/white"
             android:drawableTop="@mipmap/camera_icon"
             android:textColor="?android:attr/textColorLink"
-            android:text="Photo Translation" />
+            android:text="@string/photo" />
 
         <Button
             android:id="@+id/profileBtn"
@@ -69,7 +69,7 @@
             android:layout_weight="1"
             android:background="@android:color/white"
             android:drawableTop="@mipmap/profile_icon"
-            android:text="Profile"
+            android:text="@string/profile"
             android:textColor="?android:attr/textColorLink" />
 
     </LinearLayout>
