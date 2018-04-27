@@ -11,19 +11,19 @@ For tutorials on how to obtain the API key, please follow this link https://clou
 ## In-App Interface
 
 ### Home Page
-![home page](https://user-images.githubusercontent.com/15053859/39387418-545ec458-4a2e-11e8-8eb6-5380de936e8c.jpg)
+<img src="https://user-images.githubusercontent.com/15053859/39387418-545ec458-4a2e-11e8-8eb6-5380de936e8c.jpg" width="300" height="500">
 
 ### Text Translation Mode
-![text translation](https://user-images.githubusercontent.com/15053859/39387421-54aad956-4a2e-11e8-8f65-11808b86572d.jpg)
+<img src="https://user-images.githubusercontent.com/15053859/39387421-54aad956-4a2e-11e8-8f65-11808b86572d.jpg" width="300" height="500">
 
 ### Photo Translation Mode
-![photo translation mode](https://user-images.githubusercontent.com/15053859/39387419-547799e2-4a2e-11e8-92c3-b3d6d88ae20f.jpg)
+<img src="https://user-images.githubusercontent.com/15053859/39387419-547799e2-4a2e-11e8-92c3-b3d6d88ae20f.jpg" width="300" height="500">
 
 ### Conversation Mode
-![conversation mode](https://user-images.githubusercontent.com/15053859/39387416-542a5088-4a2e-11e8-8268-3521131f90c2.jpg)
+<img src="https://user-images.githubusercontent.com/15053859/39387416-542a5088-4a2e-11e8-8268-3521131f90c2.jpg" width="300" height="500">
 
 ### Profile Page
-![profile page](https://user-images.githubusercontent.com/15053859/39387420-5490dd76-4a2e-11e8-8658-f28a2051c85e.jpg)
+<img src="https://user-images.githubusercontent.com/15053859/39387420-5490dd76-4a2e-11e8-8658-f28a2051c85e.jpg" width="300" height="500">
 
 ### Edit Profile Page
-![edit profile page](https://user-images.githubusercontent.com/15053859/39387417-54473e50-4a2e-11e8-9b3f-d9d0663e8219.jpg)
+<img src="https://user-images.githubusercontent.com/15053859/39387417-54473e50-4a2e-11e8-9b3f-d9d0663e8219.jpg" width="300" height="500">
